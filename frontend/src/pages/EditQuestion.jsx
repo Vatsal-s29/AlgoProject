@@ -4,6 +4,7 @@ import Spinner from "../components/Spinner";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import { useSnackbar } from "notistack";
+import { QUESTION_TOPICS } from "../utils/questionTopics";
 
 const EditQuestion = () => {
     const [title, setTitle] = useState("");
@@ -128,16 +129,7 @@ const EditQuestion = () => {
                         Topics (max 3)
                     </label>
                     <div className="flex flex-wrap gap-4 mt-2">
-                        {[
-                            "dp",
-                            "graph",
-                            "greedy",
-                            "math",
-                            "bfs",
-                            "recursion",
-                            "array",
-                            "string",
-                        ].map((topic) => (
+                        {QUESTION_TOPICS.map((topic) => (
                             <label
                                 key={topic}
                                 className="flex items-center space-x-2"

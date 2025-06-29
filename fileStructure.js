@@ -5,7 +5,8 @@ const path = require("path");
 function listDir(dirPath, indent = "") {
     const items = fs.readdirSync(dirPath);
     items.forEach((item) => {
-        if (item === "node_modules") return; // Skip node_modules
+        // Skip node_modules and .git directories
+        if (item === "node_modules" || item === ".git") return;
 
         const fullPath = path.join(dirPath, item);
         const stats = fs.statSync(fullPath);
