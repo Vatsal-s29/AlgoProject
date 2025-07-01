@@ -22,7 +22,7 @@ const QuestionModal = ({ question, onClose }) => {
                 />
 
                 {/* Title */}
-                <h1 className="text-2xl font-bold text-gray-900 mb-2 flex items-center gap-2">
+                <h1 className="text-2xl font-bold text-gray-900 mb-3 flex items-center gap-2">
                     <PiBookOpenTextLight className="text-red-400" />
                     {question.title}
                 </h1>
@@ -62,6 +62,36 @@ const QuestionModal = ({ question, onClose }) => {
                         {question.problemStatement}
                     </div>
                 </div>
+
+                {/* Examples */}
+                {question.examples?.length > 0 && (
+                    <div className="mb-6">
+                        <h2 className="text-lg font-semibold text-gray-700 mb-1 mt-2">
+                            Examples
+                        </h2>
+                        <div className="space-y-4">
+                            {question.examples.map((ex, i) => (
+                                <div
+                                    key={i}
+                                    className="bg-gray-50 border border-gray-200 rounded-lg p-4 text-sm text-gray-800 font-mono"
+                                >
+                                    <p>
+                                        <strong>Input:</strong> {ex.input}
+                                    </p>
+                                    <p>
+                                        <strong>Output:</strong> {ex.output}
+                                    </p>
+                                    {ex.explanation && (
+                                        <p>
+                                            <strong>Explanation:</strong>{" "}
+                                            {ex.explanation}
+                                        </p>
+                                    )}
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );

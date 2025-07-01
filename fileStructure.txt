@@ -1,6 +1,6 @@
 this is my file structure if it is required : 
-
 Current Directory Structure:
+
 📄 .DS_Store
 📄 .gitignore
 📄 README.md
@@ -48,5 +48,7 @@ Current Directory Structure:
       📄 ShowQuestion.jsx
     📁 utils
       📄 getDifficultyClasses.jsx
+      📄 questionTopics.jsx
   📄 tailwind.config.js
   📄 vite.config.js
+📄 potential_improvements.txt

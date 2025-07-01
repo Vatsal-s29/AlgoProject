@@ -3,115 +3,175 @@ import { Question } from "../models/questionModel.js";
 
 const router = express.Router();
 
-// Route for Save a new Question
-router.post("/", async (request, response) => {
+// # Create a new question
+router.post("/", async (req, res) => {
+    const {
+        title,
+        author,
+        problemStatement,
+        difficulty,
+        topics,
+        constraints,
+        examples,
+        publicTestCases,
+        hiddenTestCases,
+    } = req.body;
+
+    if (!title || !author || !problemStatement || !difficulty) {
+        return res.status(400).json({
+            message:
+                "Required fields: title, author, problemStatement, difficulty",
+        });
+    }
+
     try {
-        if (
-            !request.body.title ||
-            !request.body.author ||
-            !request.body.problemStatement ||
-            !request.body.difficulty
-        ) {
-            return response.status(400).send({
-                message:
-                    "Send all required fields: title, author, problemStatement, difficulty",
-            });
+        const newQuestion = new Question({
+            title,
+            author,
+            problemStatement,
+            difficulty,
+            topics,
+            constraints,
+            examples,
+            publicTestCases,
+            hiddenTestCases,
+        });
+
+        const savedQuestion = await newQuestion.save();
+        res.status(201).json(savedQuestion);
+    } catch (err) {
+        if (err.code === 11000) {
+            return res
+                .status(409)
+                .json({ message: "Duplicate title or slug exists" });
         }
-        const newQuestion = {
-            title: request.body.title,
-            author: request.body.author,
-            problemStatement: request.body.problemStatement,
-            difficulty: request.body.difficulty,
-            topics: request.body.topics,
+        res.status(500).json({ message: "Server Error" });
+    }
+});
+
+// # GET all questions with pagination and search
+router.get("/", async (req, res) => {
+    const { page = 1, limit = 10, search = "", difficulty, topic } = req.query;
+
+    const pageNum = Math.max(parseInt(page) || 1, 1); // Min page 1
+    const limitNum = Math.min(parseInt(limit) || 10, 100); // Max 100 per page
+    const skip = (pageNum - 1) * limitNum;
+
+    const escapedSearch = search.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); // Escape special regex characters: (avoiding mongodb injection)
+    const regex = new RegExp(escapedSearch, "i");
+
+    try {
+        const query = {
+            ...(search
+                ? {
+                      $or: [
+                          { title: regex },
+                          { topics: regex },
+                          { author: regex },
+                      ],
+                  }
+                : {}), // Empty object = no filter = return all documents (just optimisation, minor hi sahi)
+            ...(difficulty && difficulty !== "all" && { difficulty }),
+            ...(topic && topic !== "all" && { topics: topic }),
         };
 
-        const question = await Question.create(newQuestion);
+        const total = await Question.countDocuments(query);
+        const questions = await Question.find(query)
+            .sort({ createdAt: -1 })
+            .skip(skip)
+            .limit(limitNum);
 
-        return response.status(201).send(question);
-    } catch (error) {
-        console.log(error.message);
-        response.status(500).send({ message: error.message });
-    }
-});
-
-// Route for Get All Questions from database
-router.get("/", async (request, response) => {
-    try {
-        const questions = await Question.find({});
-
-        return response.status(200).json({
-            count: questions.length,
-            data: questions,
+        // Exclude hiddenTestCases from list
+        const sanitized = questions.map((q) => {
+            const { hiddenTestCases, ...rest } = q.toObject();
+            return rest;
         });
-    } catch (error) {
-        console.log(error.message);
-        response.status(500).send({ message: error.message });
-    }
-});
 
-// Route for Get One Question from database by id
-router.get("/:id", async (request, response) => {
-    try {
-        const { id } = request.params;
-
-        const question = await Question.findById(id);
-
-        return response.status(200).json(question);
-    } catch (error) {
-        console.log(error.message);
-        response.status(500).send({ message: error.message });
-    }
-});
-
-// Route for Update a Question
-router.put("/:id", async (request, response) => {
-    try {
-        if (
-            !request.body.title ||
-            !request.body.author ||
-            !request.body.problemStatement ||
-            !request.body.difficulty
-        ) {
-            return response.status(400).send({
-                message:
-                    "Send all required fields: title, author, problemStatement, difficulty",
+        // a more descriptive message when no questions are found (optional UX)
+        if (sanitized.length === 0) {
+            return res.status(200).json({
+                total: 0,
+                currentPage: pageNum,
+                totalPages: 0,
+                data: [],
+                message: "No matching questions found.",
             });
         }
 
-        const { id } = request.params;
-
-        const result = await Question.findByIdAndUpdate(id, request.body);
-
-        if (!result) {
-            return response.status(404).json({ message: "Question not found" });
-        }
-
-        return response
-            .status(200)
-            .send({ message: "Question updated successfully" });
-    } catch (error) {
-        console.log(error.message);
-        response.status(500).send({ message: error.message });
+        res.status(200).json({
+            total,
+            currentPage: pageNum, // Instead of Number(page)
+            totalPages: Math.ceil(total / limitNum), // ✅ parsed number
+            data: sanitized,
+        });
+    } catch (err) {
+        res.status(500).json({ message: "Server Error" });
     }
 });
 
-// Route for Delete a question
-router.delete("/:id", async (request, response) => {
+// # Get one question by slug (excludes hidden test cases)
+router.get("/slug/:slug", async (req, res) => {
     try {
-        const { id } = request.params;
+        const question = await Question.findOne({ slug: req.params.slug });
 
-        const result = await Question.findByIdAndDelete(id);
+        if (!question)
+            return res.status(404).json({ message: "Question not found" });
 
-        if (!result) {
-            return response.status(404).json({ message: "Question not found" });
+        const { hiddenTestCases, ...rest } = question.toObject();
+        res.status(200).json(rest);
+    } catch (err) {
+        res.status(500).json({ message: "Server Error" });
+    }
+});
+
+// # Get one question by ID (includes hidden test cases)
+router.get("/:id", async (req, res) => {
+    try {
+        const question = await Question.findById(req.params.id);
+        if (!question)
+            return res.status(404).json({ message: "Question not found" });
+        res.status(200).json(question);
+    } catch (err) {
+        res.status(500).json({ message: "Server Error" });
+    }
+});
+
+// # Update a question by ID
+router.put("/:id", async (req, res) => {
+    try {
+        // 🚫 Prevent title updates (due to slug regenation issues)
+        if (req.body.title) {
+            return res.status(400).json({
+                message:
+                    "Title cannot be updated once the question is created.",
+            });
         }
 
-        return response
-            .status(200)
-            .send({ message: "Question deleted successfully" });
-    } catch (error) {
-        console.log(error.message);
-        response.status(500).send({ message: error.message });
+        const updated = await Question.findByIdAndUpdate(
+            req.params.id,
+            req.body,
+            { new: true, runValidators: true }
+        );
+
+        if (!updated)
+            return res.status(404).json({ message: "Question not found" });
+
+        res.status(200).json({ message: "Question updated", data: updated });
+    } catch (err) {
+        res.status(500).json({ message: "Server Error" });
+    }
+});
+
+// # Delete a question by ID
+router.delete("/:id", async (req, res) => {
+    try {
+        const deleted = await Question.findByIdAndDelete(req.params.id);
+        if (!deleted)
+            return res.status(404).json({ message: "Question not found" });
+
+        res.status(200).json({ message: "Question deleted" });
+    } catch (err) {
+        res.status(500).json({ message: "Server Error" });
     }
 });
 
