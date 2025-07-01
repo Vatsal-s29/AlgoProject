@@ -20,6 +20,8 @@ Current Directory Structure:
   📄 .DS_Store
   📄 .eslintrc.cjs
   📄 .gitignore
+  📄 con
+  📄 config.js
   📄 index.html
   📄 package-lock.json
   📄 package.json
@@ -29,9 +31,12 @@ Current Directory Structure:
   📁 src
     📄 App.jsx
     📁 assets
+      📄 black-bro-code.svg
       📄 react.svg
+      📄 white-bro-code.svg
     📁 components
-      📄 BackButton.jsx
+      📄 Layout.jsx
+      📄 Navbar.jsx
       📄 Spinner.jsx
       📁 home
         📄 QuestionModal.jsx
