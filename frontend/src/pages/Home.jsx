@@ -132,7 +132,7 @@ const Home = () => {
                         }}
                         className="w-full px-4 py-2 rounded-lg border transition-all duration-300 bg-white border-gray-300 text-gray-800 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
                     >
-                        <option value="all">All Categories</option>
+                        <option value="all">All Topics</option>
                         {QUESTION_TOPICS.map((topic) => (
                             <option key={topic} value={topic}>
                                 {topic.charAt(0).toUpperCase() + topic.slice(1)}
