@@ -56,10 +56,10 @@ We are building the **future of coding education** – one where **AI and human 
 
 ## 🛠️ Tech Highlights
 
--   **Frontend:** React.js (modern, responsive UI)
--   **Backend:** Node.js + Express (fast & scalable APIs)
--   **Database:** PostgreSQL (robust relational data handling)
--   **AI Engine:** Custom NLP + Code Analysis Models
+-   **Frontend:** React.js
+-   **Backend:** Node.js + Express
+-   **Database:** MongoDB
+-   **AI Engine:** Gemini API
 -   **Cloud Deployment:** AWS
 
 ---
