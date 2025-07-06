@@ -2,12 +2,11 @@ import React from "react";
 import Navbar from "./Navbar";
 import { Outlet } from "react-router-dom";
 
-
 const Layout = () => {
     return (
-        <div className="flex flex-col min-h-screen">
+        <div className="flex flex-col h-screen pb-3">
             <Navbar />
-            <div className="flex-1 p-6 overflow-y-auto">
+            <div className="flex-1 px-3 min-h-0">
                 <Outlet />
             </div>
         </div>

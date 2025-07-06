@@ -8,20 +8,19 @@ const Navbar = () => {
     const [showSun, setShowSun] = useState(true); // purely visual toggle
 
     return (
-        <div className="w-full h-16 bg-gray-100 px-6 flex items-center justify-between border-b border-gray-200">
-            {/* Left side - Logo and Navigation */}
+        <div className="w-full h-12 bg-gray-100 px-6 flex items-center justify-between border-b border-gray-200">
+            {/* Left side - Logo and Navigation  */}
             <div className="flex items-center space-x-8">
-                <img
-                    src={blackLogo}
-                    alt="BroCode Logo"
-                    className="h-11 w-auto"
-                />
-                <nav className="flex items-center space-x-6 text-lg font-medium">
+                <nav className="flex items-center space-x-6  font-medium">
                     <Link
                         to="/"
                         className="hover:text-blue-600 transition-colors"
                     >
-                        Home
+                        <img
+                            src={blackLogo}
+                            alt="BroCode Logo"
+                            className="h-9 w-auto"
+                        />
                     </Link>
                     <Link
                         to="/"
@@ -39,7 +38,7 @@ const Navbar = () => {
                         to="/"
                         className="hover:text-blue-600 transition-colors"
                     >
-                        Ask_Bro
+                        Ask-Bro😎
                     </Link>
                 </nav>
             </div>
