@@ -1,29 +1,75 @@
-# Question Store MERN stack project
+# 🚀 Bro-Code : Coding Learning Platform
 
-## Lessons
+> ⚠️ **This is still under development.**
 
-<!-- cross (x) -->
-<!-- check mark (v) -->
+---
 
--   [x] Lesson 01: Create Node.js project from scratch
--   [x] Lesson 02: Create our first Http Route
--   [x] Lesson 03: Add MongoDB and mongoose to node js
--   [x] Lesson 04: Create Question model with mongoose
--   [x] Lesson 05: Save a new Question with mongoose
--   [x] Lesson 06: Get All Questions with mongoose
--   [x] Lesson 07: Get One Question by id with mongoose
--   [x] Lesson 08: Update a Question with mongoose
--   [x] Lesson 09: Delete a question with mongoose
--   [x] Lesson 10: Refactor Node js with express router
--   [x] Lesson 11: CORS policy in Node js and Express js
--   [x] Lesson 12: Create React project, Vite, Tailwind CSS
--   [x] Lesson 13: SPA and Add react router dom
--   [x] Lesson 14: Show Questions List in React
--   [x] Lesson 15: Show Question Details in React
--   [x] Lesson 16: Create Question in React
--   [x] Lesson 17: Edit Question in React
--   [x] Lesson 18: Delete Question in React
--   [x] Lesson 19: Show Questions List as Card
--   [x] Lesson 20: Make Question Card a single component
--   [x] Lesson 21: Add Question Modal
--   [x] Lesson 22: Improve User Experience (UX) with beautiful alert
+## 🌟 What is it?
+
+The **Coding Learning Platform** is a revolutionary tool built to empower teachers and inspire students in their coding journey. It’s not just a learning platform – it’s an **intelligent, interactive, and adaptive environment** designed for the future of coding education.
+
+Whether you’re a teacher creating assignments or a student practicing your skills, this platform transforms the traditional learning model with **AI-driven features** and **real-time coding tools**.
+
+---
+
+## ✨ Key Features
+
+-   📝 **Dynamic Coding Assignments**
+
+    -   Teachers can post assignments containing **bundles of coding questions** tailored to different skill levels.
+    -   Students can attempt, track, and submit solutions seamlessly.
+
+-   📊 **Smart Progress Tracker**
+
+    -   Visual dashboards help students monitor their progress and areas for improvement.
+    -   Teachers gain insights into class-wide performance trends in real time.
+
+-   ⚙️ **Powerful Online Judge**
+
+    -   Submit solutions and get instant feedback.
+    -   Each submission is tested against **public** and **hidden test cases**, ensuring solutions are not just correct but robust.
+
+-   🖥️ **Integrated Multi-Language Online Compiler**
+
+    -   Supports multiple programming languages out of the box.
+    -   Run, debug, and test code instantly without leaving the platform.
+
+-   🤖 **AI Superpowers**
+    -   **Auto Test Case Generation**: Teachers can instantly create diverse and challenging test cases with AI assistance.
+    -   **Error Explainer**: Students get AI-powered, beginner-friendly explanations for errors in their code.
+    -   **Adaptive Learning Tools**: Personalized recommendations and hints to guide students step by step.
+
+---
+
+## 🌍 Why This Platform?
+
+This isn’t about just solving problems.  
+It’s about:
+
+✅ Making **coding education smarter**.  
+✅ Providing **teachers with superpowers** to create, evaluate, and guide effortlessly.  
+✅ Giving **students an environment to experiment, fail safely, and learn fast**.
+
+We are building the **future of coding education** – one where **AI and human creativity work together**.
+
+---
+
+## 🛠️ Tech Highlights
+
+-   **Frontend:** React.js (modern, responsive UI)
+-   **Backend:** Node.js + Express (fast & scalable APIs)
+-   **Database:** PostgreSQL (robust relational data handling)
+-   **AI Engine:** Custom NLP + Code Analysis Models
+-   **Cloud Deployment:** AWS
+
+---
+
+## 🚀 Ready to Change the Game?
+
+Stay tuned.  
+This isn’t just another coding platform.  
+It’s **your AI teaching assistant. Your error debugger. Your smart compiler. Your coding buddy.**
+
+**👨‍🏫 For teachers. 👩‍💻 For students. 🌐 For the future.**
+
+---
