@@ -11,7 +11,6 @@ const LeetcodeCodeEditor = ({ question = {} }) => {
     const [bottomPanelHeight, setBottomPanelHeight] = useState(30); // percentage
     const [isDragging, setIsDragging] = useState(false);
     const [testResults, setTestResults] = useState([]);
-    const [submissionResults, setSubmissionResults] = useState(null);
     const [isRunning, setIsRunning] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -169,7 +168,6 @@ const LeetcodeCodeEditor = ({ question = {} }) => {
 
         setIsRunning(true);
         setActiveBottomTab("results");
-        setBottomPanelHeight(60); // for auto panning up on run/submit
         setTestResults([]);
 
         try {
@@ -192,67 +190,20 @@ const LeetcodeCodeEditor = ({ question = {} }) => {
         if (isSubmitting || allTestCases.length === 0) return;
 
         setIsSubmitting(true);
-        setActiveBottomTab("submission");
-        setBottomPanelHeight(60); // for auto panning up on run/submit
-        setSubmissionResults(null);
+        setActiveBottomTab("results");
+        setTestResults([]);
 
         try {
-            let visiblePassed = 0;
-            let hiddenPassed = 0;
-            let visibleTotal = testCases.length;
-            let hiddenTotal = allTestCases.length - testCases.length;
-            let failed = false;
+            const results = [];
 
-            // First run visible test cases
-            for (const testCase of testCases) {
+            // Run against all test cases (public + hidden)
+            for (const testCase of allTestCases) {
                 const result = await runCodeAgainstTestCase(testCase);
-
-                if (result.status === "passed") {
-                    visiblePassed++;
-                } else {
-                    // If any visible test case fails, stop immediately
-                    failed = true;
-                    break;
-                }
+                results.push(result);
+                setTestResults([...results]); // Update UI progressively
             }
-
-            // Only run hidden test cases if all visible ones passed
-            if (!failed && hiddenTotal > 0) {
-                const hiddenTestCases = allTestCases.filter(
-                    (tc) => tc.type === "hidden"
-                );
-
-                for (const testCase of hiddenTestCases) {
-                    const result = await runCodeAgainstTestCase(testCase);
-
-                    if (result.status === "passed") {
-                        hiddenPassed++;
-                    } else {
-                        // If any hidden test case fails, stop immediately
-                        break;
-                    }
-                }
-            }
-
-            setSubmissionResults({
-                visiblePassed,
-                visibleTotal,
-                hiddenPassed,
-                hiddenTotal,
-                allPassed:
-                    visiblePassed === visibleTotal &&
-                    hiddenPassed === hiddenTotal,
-            });
         } catch (error) {
             console.error("Error submitting:", error);
-            setSubmissionResults({
-                visiblePassed: 0,
-                visibleTotal: testCases.length,
-                hiddenPassed: 0,
-                hiddenTotal: allTestCases.length - testCases.length,
-                allPassed: false,
-                error: error.message,
-            });
         } finally {
             setIsSubmitting(false);
         }
@@ -372,10 +323,7 @@ void ${question.title?.replace(/\s+/g, "_").toLowerCase() || "solution"}() {
             {/* Code Editor */}
             <div
                 className="flex-1 relative bg-gray-900 mb-1"
-                style={{
-                    height: `${100 - bottomPanelHeight}%`,
-                    transition: "height 0.3s ease-out", // for smooth panning
-                }}
+                style={{ height: `${100 - bottomPanelHeight}%` }}
             >
                 <div className="absolute inset-0 overflow-auto">
                     <textarea
@@ -408,10 +356,7 @@ void ${question.title?.replace(/\s+/g, "_").toLowerCase() || "solution"}() {
             {/* Bottom Panel */}
             <div
                 className="bg-white border border-gray-200 flex flex-col mt-1"
-                style={{
-                    height: `${bottomPanelHeight}%`,
-                    transition: "height 0.3s ease-out", // for smooth panning
-                }}
+                style={{ height: `${bottomPanelHeight}%` }}
             >
                 {/* Bottom Tabs */}
                 <div className="flex border-b border-gray-200 bg-gray-50 flex-shrink-0">
@@ -444,29 +389,6 @@ void ${question.title?.replace(/\s+/g, "_").toLowerCase() || "solution"}() {
                             >
                                 {testResultsSummary.passed}/
                                 {testResultsSummary.total}
-                            </span>
-                        )}
-                    </button>
-                    <button
-                        onClick={() => setActiveBottomTab("submission")}
-                        className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
-                            activeBottomTab === "submission"
-                                ? "border-blue-500 text-blue-600 bg-white"
-                                : "border-transparent text-gray-500 hover:text-gray-700"
-                        }`}
-                    >
-                        Submission Results
-                        {submissionResults && (
-                            <span
-                                className={`ml-2 px-2 py-1 rounded text-xs ${
-                                    submissionResults.allPassed
-                                        ? "bg-green-100 text-green-800"
-                                        : "bg-red-100 text-red-800"
-                                }`}
-                            >
-                                {submissionResults.allPassed
-                                    ? "PASSED"
-                                    : "FAILED"}
                             </span>
                         )}
                     </button>
@@ -676,7 +598,7 @@ void ${question.title?.replace(/\s+/g, "_").toLowerCase() || "solution"}() {
                                                         </div>
                                                     )}
 
-                                                    {/* <div className="flex gap-4 text-xs text-gray-600">
+                                                    <div className="flex gap-4 text-xs text-gray-600">
                                                         <span>
                                                             Runtime:{" "}
                                                             {result.runtime}
@@ -685,7 +607,7 @@ void ${question.title?.replace(/\s+/g, "_").toLowerCase() || "solution"}() {
                                                             Memory:{" "}
                                                             {result.memory}
                                                         </span>
-                                                    </div> */}
+                                                    </div>
                                                 </div>
                                             </div>
                                         ))}
@@ -693,125 +615,13 @@ void ${question.title?.replace(/\s+/g, "_").toLowerCase() || "solution"}() {
                                 </>
                             ) : (
                                 <div className="text-center text-gray-500 py-8">
-                                    {isRunning ? (
+                                    {isRunning || isSubmitting ? (
                                         <div className="flex items-center justify-center space-x-2">
                                             <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-500"></div>
                                             <span>Running tests...</span>
                                         </div>
                                     ) : (
-                                        'Click "Run" to test against visible cases'
-                                    )}
-                                </div>
-                            )}
-                        </div>
-                    )}
-
-                    {activeBottomTab === "submission" && (
-                        <div className="p-4">
-                            {submissionResults ? (
-                                <div className="space-y-4">
-                                    {/* Overall Status */}
-                                    <div
-                                        className={`p-4 rounded-lg ${
-                                            submissionResults.allPassed
-                                                ? "bg-green-50 border border-green-200"
-                                                : "bg-red-50 border border-red-200"
-                                        }`}
-                                    >
-                                        <div className="flex items-center justify-center">
-                                            <span
-                                                className={`text-xl font-bold ${
-                                                    submissionResults.allPassed
-                                                        ? "text-green-800"
-                                                        : "text-red-800"
-                                                }`}
-                                            >
-                                                {submissionResults.allPassed
-                                                    ? "✓ ACCEPTED"
-                                                    : "✗ WRONG ANSWER"}
-                                            </span>
-                                        </div>
-                                    </div>
-
-                                    {/* Test Results Summary */}
-                                    <div className="space-y-3">
-                                        <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
-                                            <h3 className="font-medium text-gray-800 mb-3">
-                                                Test Results Summary
-                                            </h3>
-
-                                            <div className="space-y-2">
-                                                <div className="flex justify-between items-center">
-                                                    <span className="text-sm text-gray-600">
-                                                        Last visible test case
-                                                        passed:
-                                                    </span>
-                                                    <span
-                                                        className={`font-mono text-sm ${
-                                                            submissionResults.visiblePassed ===
-                                                            submissionResults.visibleTotal
-                                                                ? "text-green-600"
-                                                                : "text-red-600"
-                                                        }`}
-                                                    >
-                                                        {
-                                                            submissionResults.visiblePassed
-                                                        }
-                                                        /
-                                                        {
-                                                            submissionResults.visibleTotal
-                                                        }
-                                                    </span>
-                                                </div>
-
-                                                <div className="flex justify-between items-center">
-                                                    <span className="text-sm text-gray-600">
-                                                        Last hidden test case
-                                                        passed:
-                                                    </span>
-                                                    <span
-                                                        className={`font-mono text-sm ${
-                                                            submissionResults.hiddenPassed ===
-                                                            submissionResults.hiddenTotal
-                                                                ? "text-green-600"
-                                                                : "text-red-600"
-                                                        }`}
-                                                    >
-                                                        {
-                                                            submissionResults.hiddenPassed
-                                                        }
-                                                        /
-                                                        {
-                                                            submissionResults.hiddenTotal
-                                                        }
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    {submissionResults.error && (
-                                        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-                                            <h3 className="font-medium text-red-800 mb-2">
-                                                Error
-                                            </h3>
-                                            <p className="text-sm text-red-700">
-                                                {submissionResults.error}
-                                            </p>
-                                        </div>
-                                    )}
-                                </div>
-                            ) : (
-                                <div className="text-center text-gray-500 py-8">
-                                    {isSubmitting ? (
-                                        <div className="flex items-center justify-center space-x-2">
-                                            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-500"></div>
-                                            <span>
-                                                Submitting and evaluating...
-                                            </span>
-                                        </div>
-                                    ) : (
-                                        'Click "Submit" to evaluate against all test cases'
+                                        'Click "Run" to test against visible cases or "Submit" to test against all cases'
                                     )}
                                 </div>
                             )}

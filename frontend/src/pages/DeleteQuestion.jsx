@@ -3,6 +3,7 @@ import Spinner from "../components/Spinner";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import { useSnackbar } from "notistack";
+import { BACKEND_URL } from "../../config";
 
 const DeleteQuestion = () => {
     const [loading, setLoading] = useState(false);
@@ -13,7 +14,7 @@ const DeleteQuestion = () => {
     const handleDeleteQuestion = () => {
         setLoading(true);
         axios
-            .delete(`http://localhost:5555/questions/${id}`)
+            .delete(`${BACKEND_URL}/questions/${id}`)
             .then(() => {
                 setLoading(false);
                 enqueueSnackbar("Question Deleted successfully", {
