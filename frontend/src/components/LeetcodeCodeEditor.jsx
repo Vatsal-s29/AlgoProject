@@ -651,7 +651,7 @@ void ${question.title?.replace(/\s+/g, "_").toLowerCase() || "solution"}() {
                                                                 Actual:
                                                             </span>
                                                             <div
-                                                                className={`border rounded p-2 font-mono text-xs mt-1 ${
+                                                                className={`bg-white border rounded p-2 font-mono text-xs mt-1 ${
                                                                     result.status ===
                                                                     "passed"
                                                                         ? "bg-green-50 border-green-200"

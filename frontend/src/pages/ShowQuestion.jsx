@@ -201,7 +201,7 @@ const ShowQuestion = () => {
                     )}
 
                     {/* Public Test Cases */}
-                    {question.publicTestCases?.length > 0 && (
+                    {/* {question.publicTestCases?.length > 0 && (
                         <div className="mb-6">
                             <h2 className="text-lg font-semibold text-gray-700 mb-2">
                                 Public Test Cases
@@ -222,7 +222,7 @@ const ShowQuestion = () => {
                                 ))}
                             </div>
                         </div>
-                    )}
+                    )} */}
 
                     {/* Hidden Test Cases */}
                     {/* hidden hai na bhai..nahi dikhana */}
