@@ -25,17 +25,9 @@ const Home = () => {
 
     useEffect(() => {
         setLoading(true);
-        // DEBUGGING
-        console.log("Sending filters:", {
-            page,
-            search: searchQuery,
-            difficulty,
-            topic,
-        });
-        // DEBUGGING
 
         axios
-            .get(`${BACKEND_URL}/questions`, {
+            .get(`${BACKEND_URL}/api/questions`, {
                 params: {
                     page,
                     limit,
@@ -43,6 +35,7 @@ const Home = () => {
                     difficulty: difficulty !== "all" ? difficulty : undefined,
                     topic: topic !== "all" ? topic : undefined,
                 },
+                withCredentials: true, // ✅ This is the key addition
             })
             .then((res) => {
                 setQuestions(res.data.data);

@@ -1,41 +1,107 @@
+// backend/index.js
 import express from "express";
-import { PORT, mongoDBURL } from "./config.js";
 import mongoose from "mongoose";
-import questionsRoute from "./routes/questionsRoute.js";
 import cors from "cors";
+import session from "express-session";
+import MongoStore from "connect-mongo";
+import passport from "./middleware/authMiddleware.js";
+import { PORT, mongoDBURL } from "./config.js";
+
+// Import routes
+import questionsRoute from "./routes/questionsRoute.js";
+import authRoute from "./routes/authRoute.js";
+
 const app = express();
 
 // Middleware for parsing request body
 app.use(express.json());
+app.use(express.urlencoded({ extended: true })); // ✅ Add this line
 
-// Middleware for handling CORS POLICY
-// Option 1: Allow All Origins with Default of cors(*)
-app.use(cors());
-// Option 2: Allow Custom Origins
-// app.use(
-//   cors({
-//     origin: 'http://localhost:3000',
-//     methods: ['GET', 'POST', 'PUT', 'DELETE'],
-//     allowedHeaders: ['Content-Type'],
-//   })
-// );
+// CORS middleware
+app.use(
+    cors({
+        origin: "http://localhost:5173", // ✅ Must be exact, not *
+        credentials: true,
+    })
+);
 
-app.listen(PORT, () => {
-    console.log(`App is listening to port: ${PORT}`);
-});
+// Session middleware (must be before passport middleware)
+app.use(
+    session({
+        secret: process.env.SESSION_SECRET || "your-secret-key",
+        resave: false,
+        saveUninitialized: false,
+        store: MongoStore.create({
+            mongoUrl: mongoDBURL,
+            touchAfter: 24 * 3600, // lazy session update
+        }),
+        cookie: {
+            secure: process.env.NODE_ENV === "production", // HTTPS in production
+            httpOnly: true,
+            maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
+        },
+    })
+);
+
+// Passport middleware
+app.use(passport.initialize());
+app.use(passport.session());
+
+// Routes
+app.use("/api/questions", questionsRoute);
+app.use("/api/auth", authRoute);
 
 app.get("/", (request, response) => {
     console.log(request);
-    return response.status(234).send("Welcome To MERN Stack Tutorial");
+    return response.status(234).send("Welcome To Bro Code");
 });
-
-app.use("/questions", questionsRoute);
 
 mongoose
     .connect(mongoDBURL)
     .then(() => {
         console.log("App connected to database");
+        app.listen(PORT, () => {
+            console.log(`App is listening to port: ${PORT}`);
+        });
     })
     .catch((error) => {
         console.log(error);
     });
+
+// import express from "express";
+// import { PORT, mongoDBURL } from "./config.js";
+// import mongoose from "mongoose";
+// import questionsRoute from "./routes/questionsRoute.js";
+// import cors from "cors";
+// const app = express();
+
+// // Middleware for parsing request body
+// app.use(express.json());
+
+// // Middleware for handling CORS POLICY
+// app.use(
+//     cors({
+//         origin: "http://localhost:5173", // ✅ Must be exact, not *
+//         credentials: true,
+//     })
+// );
+
+// app.listen(PORT, () => {
+//     console.log(`App is listening to port: ${PORT}`);
+// });
+
+// app.get("/", (request, response) => {
+//     console.log(request);
+//     return response.status(234).send("Welcome To MERN Stack Tutorial");
+// });
+
+// app.use("/questions", questionsRoute);
+// //
+// mongoose
+//     .connect(mongoDBURL)
+//     .then(() => {
+//         console.log("App connected to database");
+//     })
+//     .catch((error) => {
+//         console.log(error);
+//     });
