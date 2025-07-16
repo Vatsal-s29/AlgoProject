@@ -13,7 +13,9 @@ import { BACKEND_URL } from "../../config";
 const checkTitleExists = async (title) => {
     try {
         const slug = slugify(title, { lower: true, strict: true });
-        const res = await axios.get(`${BACKEND_URL}/questions/slug/${slug}`);
+        const res = await axios.get(
+            `${BACKEND_URL}/api/questions/slug/${slug}`
+        );
         return !!res?.data?.slug; // true → already exists
     } catch (err) {
         if (err.response?.status === 404) {
@@ -230,7 +232,7 @@ const CreateQuestions = () => {
         };
 
         try {
-            await axios.post(`${BACKEND_URL}/questions`, data);
+            await axios.post(`${BACKEND_URL}/api/questions`, data);
             enqueueSnackbar("Question Created successfully", {
                 variant: "success",
             });

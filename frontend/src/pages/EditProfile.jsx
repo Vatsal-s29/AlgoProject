@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
+import { BACKEND_URL } from "../../config.js";
 
 const EditProfile = () => {
     const navigate = useNavigate();
@@ -21,7 +22,12 @@ const EditProfile = () => {
 
     const fetchProfile = async () => {
         try {
-            const response = await axios.get("/api/auth/profile");
+            const response = await axios.get(
+                `${BACKEND_URL}/api/auth/profile`,
+                {
+                    withCredentials: true,
+                }
+            );
             const user = response.data.user;
             setFormData({
                 username: user.username || "",
@@ -114,8 +120,13 @@ const EditProfile = () => {
 
         setLoading(true);
         try {
-            const response = await axios.put("/api/auth/profile", formData);
-
+            const response = await axios.put(
+                `${BACKEND_URL}/api/auth/profile`,
+                formData,
+                {
+                    withCredentials: true,
+                }
+            );
             if (response.data.success) {
                 navigate("/profile", {
                     state: { message: "Profile updated successfully!" },

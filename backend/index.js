@@ -10,7 +10,7 @@ import { PORT, mongoDBURL } from "./config.js";
 // Import routes
 import questionsRoute from "./routes/questionsRoute.js";
 import authRoute from "./routes/authRoute.js";
-
+import blogRoutes from './routes/blogRoute.js';
 const app = express();
 
 // Middleware for parsing request body
@@ -50,6 +50,7 @@ app.use(passport.session());
 // Routes
 app.use("/api/questions", questionsRoute);
 app.use("/api/auth", authRoute);
+app.use('/api/blogs', blogRoutes);
 
 app.get("/", (request, response) => {
     console.log(request);
@@ -67,41 +68,3 @@ mongoose
     .catch((error) => {
         console.log(error);
     });
-
-// import express from "express";
-// import { PORT, mongoDBURL } from "./config.js";
-// import mongoose from "mongoose";
-// import questionsRoute from "./routes/questionsRoute.js";
-// import cors from "cors";
-// const app = express();
-
-// // Middleware for parsing request body
-// app.use(express.json());
-
-// // Middleware for handling CORS POLICY
-// app.use(
-//     cors({
-//         origin: "http://localhost:5173", // ✅ Must be exact, not *
-//         credentials: true,
-//     })
-// );
-
-// app.listen(PORT, () => {
-//     console.log(`App is listening to port: ${PORT}`);
-// });
-
-// app.get("/", (request, response) => {
-//     console.log(request);
-//     return response.status(234).send("Welcome To MERN Stack Tutorial");
-// });
-
-// app.use("/questions", questionsRoute);
-// //
-// mongoose
-//     .connect(mongoDBURL)
-//     .then(() => {
-//         console.log("App connected to database");
-//     })
-//     .catch((error) => {
-//         console.log(error);
-//     });

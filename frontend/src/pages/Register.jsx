@@ -71,6 +71,7 @@ const Register = () => {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
+        console.log(`Field: ${name}, Value: ${value}`); // Add this line
         setFormData((prev) => ({
             ...prev,
             [name]: value,
@@ -95,23 +96,12 @@ const Register = () => {
             const { confirmPassword, ...submitData } = formData;
             const response = await axios.post(
                 `${BACKEND_URL}/api/auth/register`,
-                submitData
+                submitData,
+                { withCredentials: true } // Add this line - important for session cookies
             );
 
-            // if (response.data.success) {
-            //     navigate("/login", {
-            //         state: {
-            //             message: "Registration successful! Please login.",
-            //         },
-            //     });
-            // }
-
             if (response.data.success) {
-                // Store the token in localStorage for auto-login
-                localStorage.setItem("token", response.data.token);
-
-                // If you're using a context for user state, update it here
-                // setUser(response.data.user);
+                // No need to Store the token in localStorage (we are using sessions and cookies not local storage)
 
                 // Redirect to home page instead of login
                 navigate("/", {

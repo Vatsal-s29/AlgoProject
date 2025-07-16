@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { BACKEND_URL } from "../../config.js";
 import {
     Trophy,
     Medal,
@@ -24,10 +25,12 @@ const Leaderboard = () => {
         try {
             setLoading(true);
             const response = await fetch(
-                `/api/auth/leaderboard?page=${currentPage}&limit=20`
+                `${BACKEND_URL}/api/auth/leaderboard?page=${currentPage}&limit=20`,
+                {
+                    credentials: "include",
+                }
             );
             const data = await response.json();
-
             if (response.ok) {
                 setLeaderboard(data.leaderboard || data);
                 setTotalPages(data.totalPages || 1);
@@ -50,11 +53,12 @@ const Leaderboard = () => {
             case 3:
                 return <Award className="w-6 h-6 text-amber-600" />;
             default:
-                return (
-                    <span className="w-6 h-6 flex items-center justify-center text-gray-600 font-bold">
-                        #{rank}
-                    </span>
-                );
+            // do nothing in default
+            // return (
+            //     <span className="w-6 h-6 flex items-center justify-center text-gray-600 font-bold">
+            //         #{rank}
+            //     </span>
+            // );
         }
     };
 
@@ -116,7 +120,7 @@ const Leaderboard = () => {
     }
 
     return (
-        <div className="min-h-screen bg-gray-50 p-4">
+        <div className="min-h-screen bg-gray-50 p-4 pt-12">
             <div className="max-w-6xl mx-auto">
                 {/* Header */}
                 <div className="mb-8">

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { BACKEND_URL } from "../../config.js";
 
 const UserStats = () => {
     const [stats, setStats] = useState(null);
@@ -12,7 +13,9 @@ const UserStats = () => {
 
     const fetchStats = async () => {
         try {
-            const response = await axios.get("/api/auth/stats");
+            const response = await axios.get(`${BACKEND_URL}/api/auth/stats`, {
+                withCredentials: true,
+            });
             setStats(response.data.stats);
         } catch (error) {
             setError("Failed to load statistics");

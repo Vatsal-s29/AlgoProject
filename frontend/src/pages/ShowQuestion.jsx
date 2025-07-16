@@ -47,10 +47,33 @@ const ShowQuestion = () => {
         }
     }, [isDragging, handleMouseMove]);
 
+    const checkAuthStatus = async () => {
+        try {
+            const response = await axios.get(`${BACKEND_URL}/api/auth/status`, {
+                withCredentials: true, // send cookies/session
+            });
+
+            if (response.status === 200 && response.data.authenticated) {
+                setIsLoggedIn(true);
+            } else {
+                setIsLoggedIn(false);
+            }
+        } catch (error) {
+            console.error("Error checking auth status:", error);
+            setIsLoggedIn(false);
+        }
+    };
+
     useEffect(() => {
         setLoading(true);
+
+        // ✅ Check auth status first
+        checkAuthStatus();
+
         axios
-            .get(`${BACKEND_URL}/questions/${id}`)
+            .get(`${BACKEND_URL}/api/questions/${id}`, {
+                withCredentials: true,
+            })
             .then((response) => {
                 setQuestion(response.data);
                 setLoading(false);
@@ -59,7 +82,7 @@ const ShowQuestion = () => {
                 console.log(error);
                 setLoading(false);
             });
-    }, [id]); // + not sure if i should put id inside here
+    }, [id]); // ✅ keep id here
 
     // Define your tabs here
     const tabs = [
@@ -276,7 +299,7 @@ const ShowQuestion = () => {
     return (
         <div className="h-full flex flex-col">
             {/* Login Toggle Button */}
-            <div className="w-full text-right my-2 flex-shrink-0">
+            {/* <div className="w-full text-right my-2 flex-shrink-0">
                 <button
                     onClick={() => setIsLoggedIn(!isLoggedIn)}
                     className={`px-4 py-2 rounded-lg text-white font-medium ${
@@ -287,11 +310,11 @@ const ShowQuestion = () => {
                 >
                     {isLoggedIn ? "Logged In" : "Logged Out"}
                 </button>
-            </div>
+            </div> */}
 
             {/* Main Content */}
             {isLoggedIn ? (
-                <div className="flex flex-1 min-h-0">
+                <div className="flex flex-1 min-h-0 mt-2">
                     {/* Left Half - Question Content (Individually Scrollable) */}
 
                     {/* <div className="bg-white rounded-2xl shadow-xl border border-gray-200 p-0 relative"> */}

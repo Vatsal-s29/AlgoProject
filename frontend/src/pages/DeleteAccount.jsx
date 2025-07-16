@@ -9,6 +9,7 @@ import {
     X,
     Check,
 } from "lucide-react";
+import { BACKEND_URL } from "../../config";
 
 const DeleteAccount = () => {
     const [showConfirmation, setShowConfirmation] = useState(false);
@@ -74,27 +75,22 @@ const DeleteAccount = () => {
         setLoading(true);
 
         try {
-            const response = await fetch("/api/auth/account", {
-                method: "DELETE",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                credentials: "include",
-                body: JSON.stringify({ password }),
-            });
+            const response = await axios.delete(
+                `${BACKEND_URL}/api/auth/delete-account`,
+                {
+                    data: { password },
+                    withCredentials: true,
+                }
+            );
 
-            const data = await response.json();
-
-            if (response.ok) {
+            if (response.data) {
                 // Account deleted successfully
                 navigate("/login", {
                     state: { message: "Account deleted successfully" },
                 });
-            } else {
-                setError(data.message || "Failed to delete account");
             }
         } catch (err) {
-            setError("Network error occurred");
+            setError(err.response?.data?.message || "Failed to delete account");
         } finally {
             setLoading(false);
         }

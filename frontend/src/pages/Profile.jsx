@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import { BACKEND_URL } from "../../config.js";
 
 const Profile = () => {
     const [user, setUser] = useState(null);
@@ -13,7 +14,12 @@ const Profile = () => {
 
     const fetchProfile = async () => {
         try {
-            const response = await axios.get("/api/auth/profile");
+            const response = await axios.get(
+                `${BACKEND_URL}/api/auth/profile`,
+                {
+                    withCredentials: true,
+                }
+            );
             setUser(response.data.user);
         } catch (error) {
             setError("Failed to load profile");
@@ -143,10 +149,10 @@ const Profile = () => {
                                     </h3>
                                     <div className="space-y-3">
                                         <Link
-                                            to="/profile/edit"
-                                            className="w-full bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 text-center block"
+                                            to="/stats"
+                                            className="w-full bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 text-center block"
                                         >
-                                            Edit Profile
+                                            View Stats
                                         </Link>
                                         <Link
                                             to="/profile/change-password"
@@ -155,10 +161,16 @@ const Profile = () => {
                                             Change Password
                                         </Link>
                                         <Link
-                                            to="/profile/stats"
-                                            className="w-full bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 text-center block"
+                                            to="/profile/edit"
+                                            className="w-full bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 text-center block"
                                         >
-                                            View Stats
+                                            Edit Profile
+                                        </Link>
+                                        <Link
+                                            to="/delete-account"
+                                            className="w-full bg-red-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 text-center block"
+                                        >
+                                            Delete Profile
                                         </Link>
                                     </div>
                                 </div>

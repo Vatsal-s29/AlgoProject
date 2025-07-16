@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
+import { BACKEND_URL } from "../../config.js";
 
 const ChangePassword = () => {
     const navigate = useNavigate();
@@ -72,10 +73,16 @@ const ChangePassword = () => {
 
         setLoading(true);
         try {
-            const response = await axios.put("/api/auth/change-password", {
-                currentPassword: formData.currentPassword,
-                newPassword: formData.newPassword,
-            });
+            const response = await axios.put(
+                `${BACKEND_URL}/api/auth/change-password`,
+                {
+                    currentPassword: formData.currentPassword,
+                    newPassword: formData.newPassword,
+                },
+                {
+                    withCredentials: true,
+                }
+            );
 
             if (response.data.success) {
                 navigate("/profile", {

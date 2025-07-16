@@ -261,37 +261,27 @@ const LeetcodeCodeEditor = ({ question = {} }) => {
     const handleReset = () => {
         // Generate template based on language
         const templates = {
-            javascript: `function ${
-                question.title?.replace(/\s+/g, "_").toLowerCase() || "solution"
-            }() {
-    // Write your solution here
-    
-}`,
-            python: `def ${
-                question.title?.replace(/\s+/g, "_").toLowerCase() || "solution"
-            }():
-    # Write your solution here
-    pass`,
-            java: `public class Solution {
-    public void ${
-        question.title?.replace(/\s+/g, "_").toLowerCase() || "solution"
-    }() {
-        // Write your solution here
-        
+            javascript: `// Start coding from here
+`,
+            python: `# Start coding from here
+`,
+            java: `public class Main {
+    public static void main(String[] args) {
+        // Start coding from here
     }
 }`,
-            cpp: `class Solution {
-public:
-    void ${question.title?.replace(/\s+/g, "_").toLowerCase() || "solution"}() {
-        // Write your solution here
-        
-    }
-};`,
+            cpp: `#include <iostream>
+using namespace std;
+
+int main() {
+    // Start coding from here
+    return 0;
+}`,
             c: `#include <stdio.h>
 
-void ${question.title?.replace(/\s+/g, "_").toLowerCase() || "solution"}() {
-    // Write your solution here
-    
+int main() {
+    // Start coding from here
+    return 0;
 }`,
         };
 

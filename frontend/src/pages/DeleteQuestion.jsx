@@ -14,7 +14,9 @@ const DeleteQuestion = () => {
     const handleDeleteQuestion = () => {
         setLoading(true);
         axios
-            .delete(`${BACKEND_URL}/questions/${id}`)
+            .delete(`${BACKEND_URL}/questions/${id}`, {
+                withCredentials: true,
+            })
             .then(() => {
                 setLoading(false);
                 enqueueSnackbar("Question Deleted successfully", {

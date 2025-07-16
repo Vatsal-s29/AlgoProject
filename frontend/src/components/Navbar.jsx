@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Sun, Moon, User } from "lucide-react";
 import blackLogo from "../assets/black-bro-code.svg";
 import { BACKEND_URL } from "../../config.js";
@@ -11,10 +11,12 @@ const Navbar = () => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
 
+    const location = useLocation(); // Add this line
+
     // Check authentication status on component mount
     useEffect(() => {
         checkAuthStatus();
-    }, []);
+    }, [location.pathname]);
 
     const checkAuthStatus = async () => {
         try {
@@ -88,6 +90,9 @@ const Navbar = () => {
                         className="hover:text-blue-600 transition-colors"
                     >
                         Leaderboard
+                    </Link>
+                    <Link to="/blogs" className="nav-link">
+                        Blogs
                     </Link>
                 </nav>
             </div>

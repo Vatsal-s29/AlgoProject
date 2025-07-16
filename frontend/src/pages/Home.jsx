@@ -35,7 +35,7 @@ const Home = () => {
                     difficulty: difficulty !== "all" ? difficulty : undefined,
                     topic: topic !== "all" ? topic : undefined,
                 },
-                withCredentials: true, // ✅ This is the key addition
+                withCredentials: true, // ✅ This is the key addition for session and cookies
             })
             .then((res) => {
                 setQuestions(res.data.data);
@@ -88,7 +88,7 @@ const Home = () => {
                             setDifficulty(e.target.value);
                             setPage(1); // reset to page 1 when filters change
                         }}
-                        className="w-full px-4 py-2 rounded-lg border transition-all duration-300 bg-white border-gray-300 text-gray-800 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+                        className="w-full pl-1 pr-4 py-2 rounded-lg border transition-all duration-300 bg-white border-gray-300 text-gray-800 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
                     >
                         <option value="all">All Difficulties</option>
                         <option value="noob">Noob</option>
@@ -104,7 +104,7 @@ const Home = () => {
                     <label className="block text-sm font-medium mb-2 text-gray-700">
                         Status
                     </label>
-                    <select className="w-full px-4 py-2 rounded-lg border transition-all duration-300 bg-white border-gray-300 text-gray-800 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20">
+                    <select className="w-full pl-1 pr-4 py-2 rounded-lg border transition-all duration-300 bg-white border-gray-300 text-gray-800 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20">
                         <option value="all">All Problems</option>
                         <option value="solved">Solved</option>
                         <option value="attempted">Attempted</option>
@@ -123,7 +123,7 @@ const Home = () => {
                             setTopic(e.target.value);
                             setPage(1); // reset to page 1 when filters change
                         }}
-                        className="w-full px-4 py-2 rounded-lg border transition-all duration-300 bg-white border-gray-300 text-gray-800 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+                        className="w-full pl-1 pr-4 py-2 rounded-lg border transition-all duration-300 bg-white border-gray-300 text-gray-800 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
                     >
                         <option value="all">All Topics</option>
                         {QUESTION_TOPICS.map((topic) => (
@@ -142,6 +142,7 @@ const Home = () => {
                             onClick={() => {
                                 setSearchQuery("");
                                 setDifficulty("all");
+                                setStatus("all");
                                 setTopic("all");
                                 setPage(1);
                             }}

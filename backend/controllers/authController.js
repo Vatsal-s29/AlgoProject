@@ -4,7 +4,7 @@ import passport from "passport";
 // Register user
 export const register = async (req, res) => {
     try {
-        const { username, email, password, name, isTeacher } = req.body;
+        const { username, email, password, name, isTeacher, bio } = req.body;
 
         // Check if user exists
         const existingUser = await User.findOne({
@@ -24,6 +24,7 @@ export const register = async (req, res) => {
             password,
             name,
             isTeacher: isTeacher || false,
+            bio,
         });
 
         // Auto login after registration
@@ -242,18 +243,21 @@ export const getUserStats = async (req, res) => {
 // Get leaderboard
 export const getLeaderboard = async (req, res) => {
     try {
-        const { limit = 50, page = 1 } = req.query;
+        const { limit = 10, page = 1 } = req.query;
 
-        const users = await User.find()
+        const users = await User.find({ isTeacher: { $ne: true } })
             .sort({ rating: -1, solvedProblems: -1 })
             .limit(limit * 1)
             .skip((page - 1) * limit)
-            .select("username name rating solvedProblems submissionsCount")
+            .select(
+                "username name rating solvedProblems submissionsCount avatar"
+            )
             .populate("solvedProblems", "difficulty");
 
         const leaderboard = users.map((user, index) => ({
             rank: (page - 1) * limit + index + 1,
             username: user.username,
+            avatar: user.avatar,
             name: user.name,
             rating: user.rating,
             totalSolved: user.solvedProblems.length,
