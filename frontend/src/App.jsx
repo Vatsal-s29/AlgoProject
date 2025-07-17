@@ -27,6 +27,12 @@ import CreateBlog from "./pages/CreateBlog";
 import EditBlog from "./pages/EditBlog";
 import BlogDetail from "./components/BlogDetail";
 
+// Doubts
+import Doubts from "./pages/doubts/Doubts";
+import CreateDoubt from "./pages/doubts/CreateDoubt";
+import DoubtDetail from "./pages/doubts/DoubtDetail";
+import EditDoubt from "./pages/doubts/EditDoubt";
+
 const App = () => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [user, setUser] = useState(null);
@@ -60,9 +66,16 @@ const App = () => {
         }
     };
 
+    // if (loading) {
+    //     return (
+    //         <div className="flex items-center justify-center h-screen">
+    //             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-400"></div>
+    //         </div>
+    //     );
+    // }
     if (loading) {
         return (
-            <div className="flex items-center justify-center h-screen">
+            <div className="fixed inset-0 flex items-center justify-center bg-white z-50">
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-400"></div>
             </div>
         );
@@ -124,6 +137,23 @@ const App = () => {
                             user={user}
                         />
                     }
+                />
+
+                {/* Doubts routes */}
+                <Route
+                    path="/doubts"
+                    element={
+                        <Doubts isAuthenticated={isAuthenticated} user={user} />
+                    }
+                />
+                <Route path="/doubts/create" element={<CreateDoubt />} />
+                <Route
+                    path="/doubts/:id"
+                    element={<DoubtDetail currentUser={user} />}
+                />
+                <Route
+                    path="/doubts/edit/:id"
+                    element={<EditDoubt currentUser={user} />}
                 />
             </Route>
         </Routes>

@@ -91,8 +91,14 @@ const Navbar = () => {
                     >
                         Leaderboard
                     </Link>
-                    <Link to="/blogs" className="nav-link">
+                    <Link to="/blogs" className="hover:text-blue-600 transition-colors">
                         Blogs
+                    </Link>
+                    <Link
+                        to="/doubts"
+                        className="hover:text-blue-600 transition-colors"
+                    >
+                        Doubts
                     </Link>
                 </nav>
             </div>

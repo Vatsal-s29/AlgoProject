@@ -10,7 +10,8 @@ import { PORT, mongoDBURL } from "./config.js";
 // Import routes
 import questionsRoute from "./routes/questionsRoute.js";
 import authRoute from "./routes/authRoute.js";
-import blogRoutes from './routes/blogRoute.js';
+import blogRoutes from "./routes/blogRoute.js";
+import doubtRoutes from "./routes/doubtRoute.js";
 const app = express();
 
 // Middleware for parsing request body
@@ -50,7 +51,8 @@ app.use(passport.session());
 // Routes
 app.use("/api/questions", questionsRoute);
 app.use("/api/auth", authRoute);
-app.use('/api/blogs', blogRoutes);
+app.use("/api/blogs", blogRoutes);
+app.use("/api/doubts", doubtRoutes);
 
 app.get("/", (request, response) => {
     console.log(request);

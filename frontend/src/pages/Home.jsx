@@ -157,7 +157,7 @@ const Home = () => {
                         <button
                             className={`p-2 transition-colors duration-200 ${
                                 showType === "card"
-                                    ? "bg-blue-600 text-gray-800"
+                                    ? "bg-blue-400 text-gray-800"
                                     : "text-gray-500 hover:text-gray-800"
                             }`}
                             onClick={() => setShowType("card")}
@@ -190,7 +190,7 @@ const Home = () => {
                         <button
                             className={`p-2 transition-colors duration-200 ${
                                 showType === "table"
-                                    ? "bg-blue-600 text-gray-800"
+                                    ? "bg-blue-400 text-gray-800"
                                     : "text-gray-500 hover:text-gray-800"
                             }`}
                             onClick={() => setShowType("table")}
