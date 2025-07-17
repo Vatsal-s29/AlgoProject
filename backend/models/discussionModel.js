@@ -1,3 +1,5 @@
+import mongoose from "mongoose";
+
 const discussionSchema = new mongoose.Schema(
     {
         questionId: {
@@ -22,3 +24,6 @@ const discussionSchema = new mongoose.Schema(
     },
     { timestamps: true }
 );
+
+const Discussion = mongoose.model("Discussion", discussionSchema);
+export default Discussion;

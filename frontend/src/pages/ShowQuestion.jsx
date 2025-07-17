@@ -5,6 +5,7 @@ import Spinner from "../components/Spinner";
 import getDifficultyClasses from "../utils/getDifficultyClasses";
 import { BACKEND_URL } from "../../config";
 import LeetcodeCodeEditor from "../components/LeetcodeCodeEditor"; // adjust path as needed
+import Discussion from "../components/discussion/Discussion";
 
 const ShowQuestion = () => {
     const [question, setQuestion] = useState({});
@@ -15,6 +16,7 @@ const ShowQuestion = () => {
 
     const [leftWidth, setLeftWidth] = useState(50);
     const [isDragging, setIsDragging] = useState(false);
+    const [user, setUser] = useState(null);
 
     const handleMouseDown = (e) => {
         setIsDragging(true);
@@ -47,6 +49,22 @@ const ShowQuestion = () => {
         }
     }, [isDragging, handleMouseMove]);
 
+    // const checkAuthStatus = async () => {
+    //     try {
+    //         const response = await axios.get(`${BACKEND_URL}/api/auth/status`, {
+    //             withCredentials: true, // send cookies/session
+    //         });
+
+    //         if (response.status === 200 && response.data.authenticated) {
+    //             setIsLoggedIn(true);
+    //         } else {
+    //             setIsLoggedIn(false);
+    //         }
+    //     } catch (error) {
+    //         console.error("Error checking auth status:", error);
+    //         setIsLoggedIn(false);
+    //     }
+    // };
     const checkAuthStatus = async () => {
         try {
             const response = await axios.get(`${BACKEND_URL}/api/auth/status`, {
@@ -55,12 +73,15 @@ const ShowQuestion = () => {
 
             if (response.status === 200 && response.data.authenticated) {
                 setIsLoggedIn(true);
+                setUser(response.data.user); // Add this line
             } else {
                 setIsLoggedIn(false);
+                setUser(null); // Add this line
             }
         } catch (error) {
             console.error("Error checking auth status:", error);
             setIsLoggedIn(false);
+            setUser(null); // Add this line
         }
     };
 
@@ -112,8 +133,7 @@ const ShowQuestion = () => {
             case "discussion":
                 return (
                     <div className="p-4">
-                        {/* Your discussion content here */}
-                        <h1>Discussion Content</h1>
+                        <Discussion questionId={id} currentUser={user} />
                     </div>
                 );
             case "solutions":
