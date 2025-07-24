@@ -1,12 +1,16 @@
-const userQuestionSchema = new mongoose.Schema(
+import mongoose from "mongoose";
+
+const { Schema, model } = mongoose;
+
+const userQuestionSchema = new Schema(
     {
         userId: {
-            type: mongoose.Schema.Types.ObjectId,
+            type: Schema.Types.ObjectId,
             ref: "User",
             required: true,
         },
         questionId: {
-            type: mongoose.Schema.Types.ObjectId,
+            type: Schema.Types.ObjectId,
             ref: "Question",
             required: true,
         },
@@ -16,10 +20,14 @@ const userQuestionSchema = new mongoose.Schema(
             default: "attempted",
         },
         bestSubmission: {
-            type: mongoose.Schema.Types.ObjectId,
+            type: Schema.Types.ObjectId,
             ref: "Submission",
         },
         attemptsCount: { type: Number, default: 0 },
     },
     { timestamps: true }
 );
+
+const UserQuestion = model("UserQuestion", userQuestionSchema);
+
+export default UserQuestion;

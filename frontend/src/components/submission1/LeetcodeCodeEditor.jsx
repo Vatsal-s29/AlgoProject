@@ -1,8 +1,7 @@
 import React, { useState, useCallback, useRef } from "react";
-import TopBar from "./submission/TopBar";
-import CodeEditor from "./submission/CodeEditor";
-import ResizeHandle from "./submission/ResizeHandle";
-import BottomPanel from "./submission/BottomPanel";
+import CodeEditorPanel from "./CodeEditorPanel";
+import ResizableBottomPanel from "./ResizableBottomPanel";
+import TabContent from "./TabContent";
 
 const LeetcodeCodeEditor = ({ question = {} }) => {
     const [language, setLanguage] = useState("cpp");
@@ -132,26 +131,37 @@ const LeetcodeCodeEditor = ({ question = {} }) => {
 
             const result = await response.json();
 
-            if (!response.ok) {
-                throw new Error(result.error || "Runtime error");
+            if (result.success) {
+                const actualOutput = result.output?.toString().trim();
+                const expectedOutput = testCase.expected?.toString().trim();
+                const passed = actualOutput === expectedOutput;
+
+                return {
+                    id: testCase.id,
+                    type: testCase.type,
+                    description: testCase.description,
+                    status: passed ? "passed" : "failed",
+                    actualOutput,
+                    expectedOutput,
+                    input: testCase.input,
+                    error: null,
+                    runtime: result.executionTime || "N/A",
+                    memory: result.memoryUsed || "N/A",
+                };
+            } else {
+                return {
+                    id: testCase.id,
+                    type: testCase.type,
+                    description: testCase.description,
+                    status: "error",
+                    actualOutput: null,
+                    expectedOutput: testCase.expected,
+                    input: testCase.input,
+                    error: result.error || "Unknown error",
+                    runtime: "N/A",
+                    memory: "N/A",
+                };
             }
-
-            const actualOutput = result.output?.toString().trim();
-            const expectedOutput = testCase.expected?.toString().trim();
-            const passed = actualOutput === expectedOutput;
-
-            return {
-                id: testCase.id,
-                type: testCase.type,
-                description: testCase.description,
-                status: passed ? "passed" : "failed",
-                actualOutput,
-                expectedOutput,
-                input: testCase.input,
-                error: null,
-                runtime: result.runtime || "N/A",
-                memory: result.memory || "N/A",
-            };
         } catch (error) {
             return {
                 id: testCase.id,
@@ -201,52 +211,44 @@ const LeetcodeCodeEditor = ({ question = {} }) => {
         setSubmissionResults(null);
 
         try {
-            let visiblePassed = 0;
-            let hiddenPassed = 0;
-            let visibleTotal = testCases.length;
-            let hiddenTotal = allTestCases.length - testCases.length;
-            let failed = false;
-
-            // First run visible test cases
-            for (const testCase of testCases) {
-                const result = await runCodeAgainstTestCase(testCase);
-
-                if (result.status === "passed") {
-                    visiblePassed++;
-                } else {
-                    // If any visible test case fails, stop immediately
-                    failed = true;
-                    break;
-                }
-            }
-
-            // Only run hidden test cases if all visible ones passed
-            if (!failed && hiddenTotal > 0) {
-                const hiddenTestCases = allTestCases.filter(
-                    (tc) => tc.type === "hidden"
-                );
-
-                for (const testCase of hiddenTestCases) {
-                    const result = await runCodeAgainstTestCase(testCase);
-
-                    if (result.status === "passed") {
-                        hiddenPassed++;
-                    } else {
-                        // If any hidden test case fails, stop immediately
-                        break;
-                    }
-                }
-            }
-
-            setSubmissionResults({
-                visiblePassed,
-                visibleTotal,
-                hiddenPassed,
-                hiddenTotal,
-                allPassed:
-                    visiblePassed === visibleTotal &&
-                    hiddenPassed === hiddenTotal,
+            // Submit code to backend
+            const response = await fetch("http://localhost:8000/submit", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    language,
+                    code,
+                    testCases: allTestCases,
+                }),
             });
+
+            const result = await response.json();
+
+            if (result.success) {
+                setSubmissionResults({
+                    visiblePassed: result.visiblePassed || 0,
+                    visibleTotal: result.visibleTotal || testCases.length,
+                    hiddenPassed: result.hiddenPassed || 0,
+                    hiddenTotal:
+                        result.hiddenTotal ||
+                        allTestCases.length - testCases.length,
+                    allPassed: result.allPassed || false,
+                    executionTime: result.executionTime,
+                    memoryUsed: result.memoryUsed,
+                });
+            } else {
+                setSubmissionResults({
+                    visiblePassed: 0,
+                    visibleTotal: testCases.length,
+                    hiddenPassed: 0,
+                    hiddenTotal: allTestCases.length - testCases.length,
+                    allPassed: false,
+                    error: result.error || "Submission failed",
+                    type: result.type,
+                });
+            }
         } catch (error) {
             console.error("Error submitting:", error);
             setSubmissionResults({
@@ -314,45 +316,93 @@ int main() {
             ref={containerRef}
             className="code-editor-container h-full flex flex-col bg-white"
         >
-            <TopBar
-                language={language}
-                setLanguage={setLanguage}
-                languages={languages}
-                handleReset={handleReset}
-                handleRun={handleRun}
-                handleSubmit={handleSubmit}
-                isRunning={isRunning}
-                isSubmitting={isSubmitting}
-                testCases={testCases}
-                allTestCases={allTestCases}
-            />
+            {/* Top Bar */}
+            <div className="flex items-center justify-between p-3 border-b border-gray-200 bg-gray-50 flex-shrink-0">
+                <div className="flex items-center space-x-3">
+                    {/* Language Selector */}
+                    <select
+                        value={language}
+                        onChange={(e) => setLanguage(e.target.value)}
+                        className="px-3 py-1 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        disabled={isRunning || isSubmitting}
+                    >
+                        {languages.map((lang) => (
+                            <option key={lang.value} value={lang.value}>
+                                {lang.label}
+                            </option>
+                        ))}
+                    </select>
+                </div>
 
-            <CodeEditor
+                <div className="flex items-center space-x-2">
+                    <button
+                        onClick={handleReset}
+                        className="px-3 py-1 text-sm text-gray-600 hover:text-gray-800 hover:bg-gray-200 rounded transition-colors"
+                        disabled={isRunning || isSubmitting}
+                    >
+                        Reset
+                    </button>
+                    <button
+                        onClick={handleRun}
+                        disabled={
+                            isRunning || isSubmitting || testCases.length === 0
+                        }
+                        className="px-4 py-1 text-sm bg-gray-200 hover:bg-gray-300 text-gray-700 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                        {isRunning ? "Running..." : "Run"}
+                    </button>
+                    <button
+                        onClick={handleSubmit}
+                        disabled={
+                            isRunning ||
+                            isSubmitting ||
+                            allTestCases.length === 0
+                        }
+                        className="px-4 py-1 text-sm bg-green-600 hover:bg-green-700 text-white rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                        {isSubmitting ? "Submitting..." : "Submit"}
+                    </button>
+                </div>
+            </div>
+
+            {/* Code Editor */}
+            <CodeEditorPanel
                 code={code}
-                setCode={setCode}
-                bottomPanelHeight={bottomPanelHeight}
-                isRunning={isRunning}
-                isSubmitting={isSubmitting}
+                onChange={setCode}
+                language={language}
+                disabled={isRunning || isSubmitting}
+                height={`${100 - bottomPanelHeight}%`}
             />
 
-            <ResizeHandle
-                isDragging={isDragging}
-                handleMouseDown={handleMouseDown}
+            {/* Horizontal Resize Handle */}
+            <div
+                className={`h-1 bg-gray-300 hover:bg-blue-400 cursor-row-resize flex-shrink-0 transition-colors ${
+                    isDragging ? "bg-blue-500" : ""
+                }`}
+                onMouseDown={handleMouseDown}
             />
 
-            <BottomPanel
-                bottomPanelHeight={bottomPanelHeight}
-                activeBottomTab={activeBottomTab}
-                setActiveBottomTab={setActiveBottomTab}
+            {/* Bottom Panel */}
+            <ResizableBottomPanel
+                height={`${bottomPanelHeight}%`}
+                activeTab={activeBottomTab}
+                onTabChange={setActiveBottomTab}
                 testCases={testCases}
-                testResults={testResults}
                 testResultsSummary={testResultsSummary}
                 submissionResults={submissionResults}
-                activeTestCase={activeTestCase}
-                setActiveTestCase={setActiveTestCase}
-                isRunning={isRunning}
-                isSubmitting={isSubmitting}
-            />
+            >
+                <TabContent
+                    activeTab={activeBottomTab}
+                    testCases={testCases}
+                    activeTestCase={activeTestCase}
+                    onTestCaseChange={setActiveTestCase}
+                    testResults={testResults}
+                    testResultsSummary={testResultsSummary}
+                    submissionResults={submissionResults}
+                    isRunning={isRunning}
+                    isSubmitting={isSubmitting}
+                />
+            </ResizableBottomPanel>
         </div>
     );
 };

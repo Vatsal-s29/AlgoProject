@@ -1,37 +1,109 @@
 const fs = require("fs");
 const path = require("path");
-const { exec } = require("child_process"); // will help us create a child instance of our terminal
+const { exec } = require("child_process");
 
-// since these codes are a static part of the program, we do not store them in our database (we can but it is not the best practice), we can store them in storages like S3 bucket and firebase storage or rightnow, we are just storing them in a separate folder
-const outputPath = path.join(__dirname, "compiled_outputs"); // will add '/compiled_outputs' to the path of the current file's directory (executeCpp.js jis directory me hai)
-// if the above path does not exist, then create a directory with this particular path
+const outputPath = path.join(__dirname, "compiled_outputs");
+
 if (!fs.existsSync(outputPath)) {
-    fs.mkdirSync(outputPath, { recursive: true }); // find on your own why we write recursive : true
+    fs.mkdirSync(outputPath, { recursive: true });
 }
 
 const executeCpp = async (filePath, inputFilePath) => {
-    // filepath = /Users/vatsal/Desktop/Algo Camp/Dev Season/Compiler/compiler_backend/codes/6a395a5c-a830-48ad-95b3-2b5bbf0ba992.cpp
-    const jobId = path.basename(filePath).split(".")[0]; // 6a395a5c-a830-48ad-95b3-2b5 (split will split the filename into two parts with '.' as the breaking point, so : [filename,cpp])
+    const jobId = path.basename(filePath).split(".")[0];
     const outputFileName = `${jobId}.out`;
-    const outPath = path.join(outputPath, outputFileName); // this is because by default the compiled output is a.out or a.exe, instead we want file_name.out/exe
+    const outPath = path.join(outputPath, outputFileName);
 
     return new Promise((resolve, reject) => {
-        // + know about this using chatgpt
+        // First compile the C++ code
         exec(
-            `g++ "${filePath}" -o "${outPath}" && cd "${outputPath}" && "./${outputFileName}" < "${inputFilePath}"`, // "" around ${} will help us avoid breakage dure to space in folder names in path
-            (error, stdout, stderr) => {
-                if (error) {
-                    // hamare code me breakage ki wajah se error
-                    reject({ error, stderr });
+            `g++ "${filePath}" -o "${outPath}"`,
+            (compileError, compileStdout, compileStderr) => {
+                if (compileError || compileStderr) {
+                    return reject({
+                        error:
+                            compileStderr ||
+                            compileError?.message ||
+                            "Compilation failed",
+                        stderr: compileStderr,
+                        type: "compilation_error",
+                    });
                 }
-                if (stderr) {
-                    // "cmd" ko execute karne me koi error
-                    reject({ stderr });
+
+                // Now execute with time and memory tracking
+                const startTime = process.hrtime.bigint();
+                const timeoutMs = 2000; // 2 seconds timeout
+
+                // Use different commands based on platform
+                let executeCommand;
+                if (process.platform === "win32") {
+                    // Windows - simpler approach without memory tracking
+                    executeCommand = `cd "${outputPath}" && "${outputFileName}" < "${inputFilePath}"`;
+                } else {
+                    // Unix/Linux/macOS - use timeout command and try to track memory
+                    executeCommand = `cd "${outputPath}" && timeout 2s "./${outputFileName}" < "${inputFilePath}"`;
                 }
-                resolve(stdout); // everything working as expected (no err)
+
+                const childProcess = exec(
+                    executeCommand,
+                    { timeout: timeoutMs },
+                    (error, stdout, stderr) => {
+                        const endTime = process.hrtime.bigint();
+                        const executionTime =
+                            Number(endTime - startTime) / 1000000; // Convert to milliseconds
+
+                        if (error) {
+                            if (error.killed || error.code === 124) {
+                                // 124 is timeout exit code
+                                // Time limit exceeded
+                                return reject({
+                                    type: "time_limit_exceeded",
+                                    executionTime: timeoutMs,
+                                    error: "Time limit exceeded (2 seconds)",
+                                });
+                            }
+                            // Runtime error
+                            return reject({
+                                type: "runtime_error",
+                                executionTime: Math.round(executionTime),
+                                error:
+                                    error.message || "Runtime error occurred",
+                                stderr,
+                            });
+                        }
+
+                        // For memory tracking, we'll use a simple approach
+                        // In production, you might want to use more sophisticated tools
+                        let memoryUsed = 0; // Default to 0 for now
+
+                        resolve({
+                            output: stdout.trim(),
+                            executionTime: Math.round(executionTime),
+                            memoryUsed,
+                            type: "success",
+                        });
+                    }
+                );
             }
         );
     });
 };
 
 module.exports = executeCpp;
+
+// sample service response
+// * SUCCESS
+// {
+//   "success": true,
+//   "output": "program output",
+//   "executionTime": 150,
+//   "memoryUsed": 0,
+//   "type": "success"
+// }
+// ! ERROR
+// {
+//   "success": false,
+//   "error": "error message",
+//   "type": "time_limit_exceeded|runtime_error|compilation_error",
+//   "executionTime": 2000,
+//   "stderr": "error details"
+// }
