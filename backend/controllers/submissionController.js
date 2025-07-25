@@ -1,5 +1,6 @@
 import Submission from "../models/submissionModel.js";
 import { Question } from "../models/questionModel.js";
+import mongoose from "mongoose";
 import axios from "axios";
 
 // Submit code for a question
@@ -253,13 +254,66 @@ export const getSubmission = async (req, res) => {
 // Get submission statistics for a user
 export const getSubmissionStats = async (req, res) => {
     try {
-        const userId = req.user.id;
+        const userId = new mongoose.Types.ObjectId(req.user.id);
 
         const stats = await Submission.aggregate([
             { $match: { userId: userId } },
             {
                 $group: {
                     _id: "$status",
+                    count: { $sum: 1 },
+                },
+            },
+        ]);
+
+        // Get unique problems solved (distinct questions with accepted status)
+        const uniqueProblemsSolved = await Submission.aggregate([
+            {
+                $match: {
+                    userId: userId,
+                    status: "accepted",
+                },
+            },
+            {
+                $group: {
+                    _id: "$questionId",
+                },
+            },
+            {
+                $count: "uniqueProblems",
+            },
+        ]);
+
+        // Get problems solved by difficulty level
+        const problemsByDifficulty = await Submission.aggregate([
+            {
+                $match: {
+                    userId: userId,
+                    status: "accepted",
+                },
+            },
+            {
+                $lookup: {
+                    from: "questions",
+                    localField: "questionId",
+                    foreignField: "_id",
+                    as: "question",
+                },
+            },
+            {
+                $unwind: "$question",
+            },
+            {
+                $group: {
+                    _id: {
+                        questionId: "$questionId",
+                        difficulty: "$question.difficulty",
+                    },
+                },
+            },
+            {
+                $group: {
+                    _id: "$_id.difficulty",
                     count: { $sum: 1 },
                 },
             },
@@ -275,11 +329,24 @@ export const getSubmissionStats = async (req, res) => {
             time_limit_exceeded: 0,
             runtime_error: 0,
             memory_limit_exceeded: 0,
+            uniqueProblemsSolved: uniqueProblemsSolved[0]?.uniqueProblems || 0,
+            basic: 0,
+            easy: 0,
+            medium: 0,
+            hard: 0,
+            god: 0,
         };
 
         stats.forEach((stat) => {
             if (formattedStats.hasOwnProperty(stat._id)) {
                 formattedStats[stat._id] = stat.count;
+            }
+        });
+
+        // difficulty-wise solved problems
+        problemsByDifficulty.forEach((difficulty) => {
+            if (formattedStats.hasOwnProperty(difficulty._id)) {
+                formattedStats[difficulty._id] = difficulty.count;
             }
         });
 

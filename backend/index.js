@@ -13,6 +13,7 @@ import authRoute from "./routes/authRoute.js";
 import blogRoutes from "./routes/blogRoute.js";
 import doubtRoutes from "./routes/doubtRoute.js";
 import discussionRoutes from "./routes/discussionRoute.js";
+import submissionRoutes from "./routes/submissionRoute.js";
 const app = express();
 
 // Middleware for parsing request body
@@ -55,6 +56,7 @@ app.use("/api/auth", authRoute);
 app.use("/api/blogs", blogRoutes);
 app.use("/api/doubts", doubtRoutes);
 app.use("/api/discussions", discussionRoutes);
+app.use("/api/submissions", submissionRoutes);
 
 app.get("/", (request, response) => {
     console.log(request);

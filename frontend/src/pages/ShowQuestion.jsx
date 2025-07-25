@@ -4,8 +4,9 @@ import { useParams } from "react-router-dom";
 import Spinner from "../components/Spinner";
 import getDifficultyClasses from "../utils/getDifficultyClasses";
 import { BACKEND_URL } from "../../config";
-import LeetcodeCodeEditor from "../components/LeetcodeCodeEditor"; // adjust path as needed
+import LeetcodeCodeEditor from "../components/LeetcodeCodeEditor";
 import Discussion from "../components/discussion/Discussion";
+import Submissions from "../components/Submissions";
 
 const ShowQuestion = () => {
     const [question, setQuestion] = useState({});
@@ -49,22 +50,6 @@ const ShowQuestion = () => {
         }
     }, [isDragging, handleMouseMove]);
 
-    // const checkAuthStatus = async () => {
-    //     try {
-    //         const response = await axios.get(`${BACKEND_URL}/api/auth/status`, {
-    //             withCredentials: true, // send cookies/session
-    //         });
-
-    //         if (response.status === 200 && response.data.authenticated) {
-    //             setIsLoggedIn(true);
-    //         } else {
-    //             setIsLoggedIn(false);
-    //         }
-    //     } catch (error) {
-    //         console.error("Error checking auth status:", error);
-    //         setIsLoggedIn(false);
-    //     }
-    // };
     const checkAuthStatus = async () => {
         try {
             const response = await axios.get(`${BACKEND_URL}/api/auth/status`, {
@@ -110,7 +95,7 @@ const ShowQuestion = () => {
         { id: "question", label: "Question", icon: "❓" },
         { id: "hints", label: "Hints", icon: "💡" },
         { id: "discussion", label: "Discussion", icon: "💬" },
-        { id: "solutions", label: "Solutions", icon: "✅" },
+        { id: "submissions", label: "Submissions", icon: "✅" },
     ];
 
     // Tab content function - customize with your content
@@ -136,11 +121,14 @@ const ShowQuestion = () => {
                         <Discussion questionId={id} currentUser={user} />
                     </div>
                 );
-            case "solutions":
+            case "submissions":
                 return (
                     <div className="p-4">
-                        {/* Your solutions content here */}
-                        <h1>Solutions Content</h1>
+                        <Submissions
+                            questionId={id}
+                            currentUser={user}
+                            isActive={activeTab === "submissions"}
+                        />
                     </div>
                 );
             default:
@@ -243,55 +231,6 @@ const ShowQuestion = () => {
                         </div>
                     )}
 
-                    {/* Public Test Cases */}
-                    {/* {question.publicTestCases?.length > 0 && (
-                        <div className="mb-6">
-                            <h2 className="text-lg font-semibold text-gray-700 mb-2">
-                                Public Test Cases
-                            </h2>
-                            <div className="space-y-2 text-sm font-mono text-gray-800">
-                                {question.publicTestCases.map((tc, i) => (
-                                    <div
-                                        key={i}
-                                        className="bg-gray-100 p-3 rounded border border-gray-200"
-                                    >
-                                        <p>
-                                            <strong>Input:</strong> {tc.input}
-                                        </p>
-                                        <p>
-                                            <strong>Output:</strong> {tc.output}
-                                        </p>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    )} */}
-
-                    {/* Hidden Test Cases */}
-                    {/* hidden hai na bhai..nahi dikhana */}
-                    {/* {question.hiddenTestCases?.length > 0 && (
-                        <div className="mb-6">
-                            <h2 className="text-lg font-semibold text-gray-700 mb-2">
-                                Hidden Test Cases
-                            </h2>
-                            <div className="space-y-2 text-sm font-mono text-gray-800">
-                                {question.hiddenTestCases.map((tc, i) => (
-                                    <div
-                                        key={i}
-                                        className="bg-gray-100 p-3 rounded border border-gray-200"
-                                    >
-                                        <p>
-                                            <strong>Input:</strong> {tc.input}
-                                        </p>
-                                        <p>
-                                            <strong>Output:</strong> {tc.output}
-                                        </p>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    )} */}
-
                     {/* Footer Metadata */}
                     <div className="mt-10 flex justify-end">
                         <div className="text-sm text-gray-500 text-right space-y-1">
@@ -318,20 +257,6 @@ const ShowQuestion = () => {
 
     return (
         <div className="h-full flex flex-col">
-            {/* Login Toggle Button */}
-            {/* <div className="w-full text-right my-2 flex-shrink-0">
-                <button
-                    onClick={() => setIsLoggedIn(!isLoggedIn)}
-                    className={`px-4 py-2 rounded-lg text-white font-medium ${
-                        isLoggedIn
-                            ? "bg-green-600 hover:bg-green-700"
-                            : "bg-red-600 hover:bg-red-700"
-                    }`}
-                >
-                    {isLoggedIn ? "Logged In" : "Logged Out"}
-                </button>
-            </div> */}
-
             {/* Main Content */}
             {isLoggedIn ? (
                 <div className="flex flex-1 min-h-0 mt-2">
