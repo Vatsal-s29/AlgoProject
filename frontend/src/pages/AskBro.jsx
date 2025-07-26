@@ -121,17 +121,7 @@ Respond as my friend would - be helpful but keep it real. Format your response i
     };
 
     return (
-        <div className="flex flex-col h-full bg-gray-50">
-            {/* Header */}
-            <div className="bg-blue-600 text-white p-4 shadow-lg">
-                <div className="max-w-4xl mx-auto">
-                    <h1 className="text-2xl font-bold">AskBro 🤙</h1>
-                    <p className="text-blue-100">
-                        Your friendly AI bro, here to help!
-                    </p>
-                </div>
-            </div>
-
+        <div className="flex flex-col h-full bg-gray-50 pt-4">
             {/* Messages Container */}
             <div className="flex-1 overflow-y-auto p-4">
                 <div className="max-w-4xl mx-auto space-y-4">
