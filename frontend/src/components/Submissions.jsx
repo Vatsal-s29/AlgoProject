@@ -219,7 +219,7 @@ const Submissions = ({ questionId, currentUser, isActive }) => {
                                                 </div>
                                             )}
 
-                                        {/* Submission portion to be implemented later */}
+                                        {/* memory portion to be implemented later */}
 
                                         {/* {submission.memoryUsed &&
                                             submission.memoryUsed > 0 && (

@@ -5,6 +5,7 @@ import {
     getQuestionSubmissions,
     getSubmission,
     getSubmissionStats,
+    getLeaderboard,
 } from "../controllers/submissionController.js";
 import { isAuthenticated } from "../middleware/authMiddleware.js";
 
@@ -24,5 +25,7 @@ router.get("/:submissionId", isAuthenticated, getSubmission);
 
 // Get submission statistics for logged-in user
 router.get("/stats/user", isAuthenticated, getSubmissionStats);
+
+router.get("/stats/leaderboard", isAuthenticated, getLeaderboard);
 
 export default router;

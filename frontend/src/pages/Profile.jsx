@@ -38,7 +38,7 @@ const Profile = () => {
 
     if (loading) {
         return (
-            <div className="min-h-screen flex items-center justify-center">
+            <div className="min-h-full flex items-center justify-center">
                 <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-indigo-600"></div>
             </div>
         );
@@ -46,7 +46,7 @@ const Profile = () => {
 
     if (error) {
         return (
-            <div className="min-h-screen flex items-center justify-center">
+            <div className="min-h-full flex items-center justify-center">
                 <div className="text-red-600 text-center">
                     <p className="text-xl">{error}</p>
                     <button
@@ -61,7 +61,7 @@ const Profile = () => {
     }
 
     return (
-        <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+        <div className="min-h-full bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
             <div className="max-w-4xl mx-auto">
                 <div className="bg-white shadow-lg rounded-lg overflow-hidden">
                     {/* Header */}
@@ -226,7 +226,7 @@ export default Profile;
 
 //     if (loading) {
 //         return (
-//             <div className="min-h-screen flex items-center justify-center">
+//             <div className="min-h-full flex items-center justify-center">
 //                 <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-indigo-600"></div>
 //             </div>
 //         );
@@ -234,7 +234,7 @@ export default Profile;
 
 //     if (error) {
 //         return (
-//             <div className="min-h-screen flex items-center justify-center">
+//             <div className="min-h-full flex items-center justify-center">
 //                 <div className="text-red-600 text-center">
 //                     <p className="text-xl">{error}</p>
 //                     <button
@@ -249,7 +249,7 @@ export default Profile;
 //     }
 
 //     return (
-//         <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+//         <div className="min-h-full bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
 //             <div className="max-w-4xl mx-auto">
 //                 <div className="bg-white shadow-lg rounded-lg overflow-hidden">
 //                     {/* Header */}

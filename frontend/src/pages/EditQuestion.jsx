@@ -142,7 +142,6 @@ const EditQuestion = () => {
             setLoading(false);
         }
     };
-
     const renderTestCasesAndExamples = (
         labelPrefix,
         cases,
@@ -159,15 +158,24 @@ const EditQuestion = () => {
                 {cases.map((tc, index) => (
                     <div
                         key={index}
-                        className="relative mb-2 space-y-2 border-b pb-2 border-gray-300"
+                        className="relative bg-gray-50 border border-gray-200 rounded-md p-4 space-y-4"
                     >
-                        <p className="font-semibold text-gray-600">
-                            {labelPrefix} {index + 1}
-                        </p>
+                        <div className="flex justify-between items-center">
+                            <p className="font-medium text-gray-700">
+                                {labelPrefix} {index + 1}
+                            </p>
+                            <button
+                                className="bg-red-100 hover:bg-red-200 text-red-700 px-3 py-1 text-sm rounded-md transition-colors"
+                                onClick={() => handleDelete(index)}
+                                type="button"
+                            >
+                                Delete
+                            </button>
+                        </div>
 
                         {labelFields.map((field) => (
                             <div key={field}>
-                                <label className="block text-sm text-gray-500 mb-1 capitalize">
+                                <label className="block text-sm font-medium text-gray-700 mb-2 capitalize">
                                     {field}
                                 </label>
                                 <textarea
@@ -177,18 +185,10 @@ const EditQuestion = () => {
                                         updated[index][field] = e.target.value;
                                         setCases(updated);
                                     }}
-                                    className="border-2 border-gray-300 px-2 py-1 w-full resize-y min-h-[80px] font-mono"
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 resize-y min-h-[80px] font-mono"
                                 />
                             </div>
                         ))}
-
-                        <button
-                            className="absolute top-1 right-1 bg-red-200 hover:bg-red-300 px-2 py-1 text-sm rounded"
-                            onClick={() => handleDelete(index)}
-                            type="button"
-                        >
-                            Delete
-                        </button>
                     </div>
                 ))}
 
@@ -203,7 +203,7 @@ const EditQuestion = () => {
                                 }, {}),
                             ])
                         }
-                        className="mt-2 bg-green-200 px-2 py-1 rounded hover:bg-green-300"
+                        className="bg-green-100 hover:bg-green-200 text-green-700 px-4 py-2 rounded-md transition-colors"
                         type="button"
                     >
                         + Add {labelPrefix}
@@ -214,173 +214,227 @@ const EditQuestion = () => {
     };
 
     return (
-        <div className="p-4">
-            <h1 className="text-3xl my-4">Edit Question</h1>
-            {loading && <Spinner />}
-            <div className="flex flex-col border-2 border-sky-400 rounded-xl w-[600px] p-4 mx-auto">
-                {/* title */}
-                <div className="my-4">
-                    <label className="text-xl text-gray-500 block mb-1">
-                        Title <i>(cannot be edited) </i>
-                    </label>
-                    <p className="border-2 border-gray-300 px-4 py-2 rounded bg-gray-100 text-gray-700">
-                        {title}
-                    </p>
-                </div>
+        <div className="max-w-4xl mx-auto p-6">
+            <div className="bg-white rounded-lg shadow-md p-8">
+                <h1 className="text-3xl font-bold text-gray-800 mb-6">
+                    Edit Question
+                </h1>
 
-                {/* Author */}
-                <div className="my-4">
-                    <label className="text-xl text-gray-500">Author</label>
-                    <input
-                        type="text"
-                        value={author}
-                        onChange={(e) => setAuthor(e.target.value)}
-                        className="border-2 border-gray-500 px-4 py-2 w-full"
-                    />
-                </div>
+                {loading && (
+                    <div className="bg-blue-100 border border-blue-400 text-blue-700 px-4 py-3 rounded mb-6">
+                        Loading...
+                    </div>
+                )}
 
-                {/* Problem Statement */}
-                <div className="my-4">
-                    <label className="text-xl text-gray-500 block mb-2">
-                        Problem Statement
-                    </label>
-                    <textarea
-                        value={problemStatement}
-                        onChange={(e) => setProblemStatement(e.target.value)}
-                        className="border-2 border-gray-500 px-4 py-2 w-full resize-y min-h-[120px]"
-                        placeholder="Enter the problem statement here..."
-                    />
-                </div>
+                <form className="space-y-6">
+                    {/* Title */}
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Title
+                        </label>
+                        <div className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-50 text-gray-600">
+                            {title}
+                            <span className="text-sm italic ml-2">
+                                (cannot be edited)
+                            </span>
+                        </div>
+                    </div>
 
-                {/* Constraints */}
-                <div className="my-4">
-                    <label className="text-xl text-gray-500 block mb-2">
-                        Constraints
-                    </label>
-                    <textarea
-                        value={constraints}
-                        onChange={(e) => setConstraints(e.target.value)}
-                        className="border-2 border-gray-500 px-4 py-2 w-full resize-y min-h-[100px]"
-                        placeholder="e.g., 1 ≤ n ≤ 10⁹"
-                    />
-                </div>
+                    {/* Author */}
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Author *
+                        </label>
+                        <input
+                            type="text"
+                            value={author}
+                            onChange={(e) => setAuthor(e.target.value)}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            placeholder="Enter author name"
+                            required
+                        />
+                    </div>
 
-                {/* Difficulty */}
-                <div className="my-4">
-                    <label className="text-xl text-gray-500">Difficulty</label>
-                    <select
-                        value={difficulty}
-                        onChange={(e) => setDifficulty(e.target.value)}
-                        className="border-2 border-gray-500 px-4 py-2 w-full"
-                    >
-                        {["noob", "easy", "medium", "hard", "god"].map((d) => (
-                            <option key={d} value={d}>
-                                {d}
-                            </option>
-                        ))}
-                    </select>
-                </div>
+                    {/* Problem Statement */}
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Problem Statement *
+                        </label>
+                        <textarea
+                            value={problemStatement}
+                            onChange={(e) =>
+                                setProblemStatement(e.target.value)
+                            }
+                            rows={6}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            placeholder="Enter the problem statement here..."
+                            required
+                        />
+                    </div>
 
-                {/* Topics */}
-                <div className="my-4">
-                    <label className="text-xl text-gray-500">
-                        Topics (max 3)
-                    </label>
-                    <div className="flex flex-wrap gap-4 mt-2">
-                        {QUESTION_TOPICS.map((topic) => {
-                            const disabled =
-                                !topics.includes(topic) && topics.length >= 3;
-                            return (
-                                <label
-                                    key={topic}
-                                    className="flex items-center gap-2"
-                                >
-                                    <input
-                                        type="checkbox"
-                                        value={topic}
-                                        checked={topics.includes(topic)}
-                                        disabled={disabled}
-                                        onChange={(e) => {
-                                            if (e.target.checked) {
-                                                if (topics.length < 3) {
-                                                    setTopics([
-                                                        ...topics,
-                                                        topic,
-                                                    ]);
-                                                }
-                                            } else {
-                                                setTopics(
-                                                    topics.filter(
-                                                        (t) => t !== topic
-                                                    )
-                                                );
-                                            }
-                                        }}
-                                    />
-                                    <span
-                                        className={
+                    {/* Constraints */}
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Constraints
+                        </label>
+                        <textarea
+                            value={constraints}
+                            onChange={(e) => setConstraints(e.target.value)}
+                            rows={4}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            placeholder="e.g., 1 ≤ n ≤ 10⁹"
+                        />
+                    </div>
+
+                    {/* Difficulty */}
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Difficulty *
+                        </label>
+                        <select
+                            value={difficulty}
+                            onChange={(e) => setDifficulty(e.target.value)}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            required
+                        >
+                            {["noob", "easy", "medium", "hard", "god"].map(
+                                (d) => (
+                                    <option key={d} value={d}>
+                                        {d.charAt(0).toUpperCase() + d.slice(1)}
+                                    </option>
+                                )
+                            )}
+                        </select>
+                    </div>
+
+                    {/* Topics */}
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Topics (max 3) *
+                        </label>
+                        <div className="flex flex-wrap gap-4 mt-2">
+                            {QUESTION_TOPICS.map((topic) => {
+                                const disabled =
+                                    !topics.includes(topic) &&
+                                    topics.length >= 3;
+                                return (
+                                    <label
+                                        key={topic}
+                                        className={`flex items-center space-x-2 ${
                                             disabled
                                                 ? "opacity-50 cursor-not-allowed"
-                                                : ""
-                                        }
+                                                : "cursor-pointer"
+                                        }`}
                                     >
-                                        {topic}
-                                    </span>
-                                </label>
-                            );
-                        })}
+                                        <input
+                                            type="checkbox"
+                                            value={topic}
+                                            checked={topics.includes(topic)}
+                                            disabled={disabled}
+                                            onChange={(e) => {
+                                                if (e.target.checked) {
+                                                    if (topics.length < 3) {
+                                                        setTopics([
+                                                            ...topics,
+                                                            topic,
+                                                        ]);
+                                                    }
+                                                } else {
+                                                    setTopics(
+                                                        topics.filter(
+                                                            (t) => t !== topic
+                                                        )
+                                                    );
+                                                }
+                                            }}
+                                            className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                                        />
+                                        <span className="text-sm text-gray-700">
+                                            {topic}
+                                        </span>
+                                    </label>
+                                );
+                            })}
+                        </div>
                     </div>
-                </div>
 
-                {/* Examples */}
-                <div className="my-4">
-                    <label className="text-xl text-gray-500">Examples</label>
-                    {renderTestCasesAndExamples(
-                        "Example",
-                        examples,
-                        setExamples,
-                        4,
-                        ["input", "output", "explanation"]
-                    )}
-                </div>
+                    {/* Examples */}
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-4">
+                            Examples
+                        </label>
+                        {renderTestCasesAndExamples(
+                            "Example",
+                            examples,
+                            setExamples,
+                            4,
+                            ["input", "output", "explanation"]
+                        )}
+                    </div>
 
-                {/* Public Test Cases */}
-                <div className="my-4">
-                    <label className="text-xl text-gray-500">
-                        Public Test Cases
-                    </label>
-                    {renderTestCasesAndExamples(
-                        "Public Test Case",
-                        publicTestCases,
-                        setPublicTestCases,
-                        5
-                    )}
-                </div>
+                    {/* Public Test Cases */}
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-4">
+                            Public Test Cases
+                        </label>
+                        {renderTestCasesAndExamples(
+                            "Public Test Case",
+                            publicTestCases,
+                            setPublicTestCases,
+                            5
+                        )}
+                    </div>
 
-                {/* Hidden Test Cases */}
-                <div className="my-4">
-                    <label className="text-xl text-gray-500">
-                        Hidden Test Cases
-                    </label>
-                    {renderTestCasesAndExamples(
-                        "Hidden Test Case",
-                        hiddenTestCases,
-                        setHiddenTestCases,
-                        Infinity
-                    )}
-                </div>
+                    {/* Hidden Test Cases */}
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-4">
+                            Hidden Test Cases
+                        </label>
+                        {renderTestCasesAndExamples(
+                            "Hidden Test Case",
+                            hiddenTestCases,
+                            setHiddenTestCases,
+                            Infinity
+                        )}
+                    </div>
 
-                <button
-                    className={`p-2 m-8 rounded transition ${
-                        loading
-                            ? "bg-gray-400 cursor-not-allowed"
-                            : "bg-sky-300 hover:bg-sky-400"
-                    }`}
-                    onClick={handleUpdate}
-                    disabled={loading}
-                >
-                    {loading ? "Saving..." : "Save"}
-                </button>
+                    <div className="bg-blue-50 border border-blue-200 rounded-md p-4">
+                        <h3 className="font-medium text-blue-800 mb-2">
+                            Question Guidelines:
+                        </h3>
+                        <ul className="text-sm text-blue-700 space-y-1">
+                            <li>
+                                • Provide clear and detailed problem statements
+                            </li>
+                            <li>• Include relevant constraints and examples</li>
+                            <li>
+                                • Select appropriate difficulty level and topics
+                            </li>
+                            <li>
+                                • Add sufficient test cases for proper
+                                evaluation
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div className="flex gap-4">
+                        <button
+                            type="button"
+                            onClick={handleUpdate}
+                            disabled={loading}
+                            className="flex-1 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white py-2 px-4 rounded-md transition-colors"
+                        >
+                            {loading ? "Saving..." : "Update Question"}
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => window.history.back()}
+                            className="flex-1 bg-gray-600 hover:bg-gray-700 text-white py-2 px-4 rounded-md transition-colors"
+                        >
+                            Cancel
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     );

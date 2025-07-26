@@ -13,7 +13,7 @@ import { SyncLoader } from "react-spinners";
 
 const Spinner = () => {
     return (
-        <div className="flex items-center justify-center h-screen">
+        <div className="flex items-center justify-center h-full">
             {/* <PacmanLoader speedMultiplier={3} /> */}
             <SyncLoader speedMultiplier={2} />
         </div>

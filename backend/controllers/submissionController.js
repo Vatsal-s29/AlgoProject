@@ -363,3 +363,190 @@ export const getSubmissionStats = async (req, res) => {
         });
     }
 };
+export const getLeaderboard = async (req, res) => {
+    try {
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 20;
+        const skip = (page - 1) * limit;
+
+        // Get all users who have made submissions
+        const usersWithSubmissions = await Submission.aggregate([
+            {
+                $group: {
+                    _id: "$userId",
+                },
+            },
+        ]);
+
+        const leaderboardData = [];
+
+        // Calculate stats for each user
+        for (const userDoc of usersWithSubmissions) {
+            const userId = userDoc._id;
+
+            // Get user details using lookup in aggregation
+            const userResult = await Submission.aggregate([
+                { $match: { userId: userId } },
+                {
+                    $lookup: {
+                        from: "users",
+                        localField: "userId",
+                        foreignField: "_id",
+                        as: "user",
+                    },
+                },
+                {
+                    $unwind: "$user",
+                },
+                {
+                    $group: {
+                        _id: "$userId",
+                        user: { $first: "$user" },
+                    },
+                },
+            ]);
+
+            if (!userResult.length) continue;
+            const user = userResult[0].user;
+
+            // Get submission statistics by status
+            const stats = await Submission.aggregate([
+                { $match: { userId: userId } },
+                {
+                    $group: {
+                        _id: "$status",
+                        count: { $sum: 1 },
+                    },
+                },
+            ]);
+
+            // Get unique problems solved (distinct questions with accepted status)
+            const uniqueProblemsSolved = await Submission.aggregate([
+                {
+                    $match: {
+                        userId: userId,
+                        status: "accepted",
+                    },
+                },
+                {
+                    $group: {
+                        _id: "$questionId",
+                    },
+                },
+                {
+                    $count: "uniqueProblems",
+                },
+            ]);
+
+            // Get problems solved by difficulty level
+            const problemsByDifficulty = await Submission.aggregate([
+                {
+                    $match: {
+                        userId: userId,
+                        status: "accepted",
+                    },
+                },
+                {
+                    $lookup: {
+                        from: "questions",
+                        localField: "questionId",
+                        foreignField: "_id",
+                        as: "question",
+                    },
+                },
+                {
+                    $unwind: "$question",
+                },
+                {
+                    $group: {
+                        _id: {
+                            questionId: "$questionId",
+                            difficulty: "$question.difficulty",
+                        },
+                    },
+                },
+                {
+                    $group: {
+                        _id: "$_id.difficulty",
+                        count: { $sum: 1 },
+                    },
+                },
+            ]);
+
+            const total = await Submission.countDocuments({ userId });
+
+            // Format stats
+            const formattedStats = {
+                _id: user._id,
+                name: user.name,
+                username: user.username,
+                avatar: user.avatar,
+                total,
+                accepted: 0,
+                uniqueProblemsSolved:
+                    uniqueProblemsSolved[0]?.uniqueProblems || 0,
+                basic: 0,
+                easy: 0,
+                medium: 0,
+                hard: 0,
+                god: 0,
+                rating: 0,
+            };
+
+            // Fill in submission stats by status
+            stats.forEach((stat) => {
+                if (stat._id === "accepted") {
+                    formattedStats.accepted = stat.count;
+                }
+            });
+
+            // Fill in difficulty-wise solved problems
+            problemsByDifficulty.forEach((difficulty) => {
+                if (formattedStats.hasOwnProperty(difficulty._id)) {
+                    formattedStats[difficulty._id] = difficulty.count;
+                }
+            });
+
+            // Calculate rating
+            formattedStats.rating =
+                formattedStats.basic * 1 +
+                formattedStats.easy * 2 +
+                formattedStats.medium * 5 +
+                formattedStats.hard * 10 +
+                formattedStats.god * 20;
+
+            leaderboardData.push(formattedStats);
+        }
+
+        // Sort leaderboard
+        leaderboardData.sort((a, b) => {
+            if (a.rating !== b.rating) return b.rating - a.rating;
+            if (a.uniqueProblemsSolved !== b.uniqueProblemsSolved)
+                return b.uniqueProblemsSolved - a.uniqueProblemsSolved;
+            return b.accepted - a.accepted;
+        });
+
+        // Apply pagination
+        const totalUsers = leaderboardData.length;
+        const totalPages = Math.ceil(totalUsers / limit);
+        const paginatedData = leaderboardData.slice(skip, skip + limit);
+
+        res.status(200).json({
+            success: true,
+            data: paginatedData,
+            pagination: {
+                currentPage: page,
+                totalPages,
+                totalUsers,
+                hasNext: page < totalPages,
+                hasPrev: page > 1,
+            },
+        });
+    } catch (error) {
+        console.error("Error fetching leaderboard:", error);
+        res.status(500).json({
+            success: false,
+            message: "Internal server error",
+        });
+    }
+};

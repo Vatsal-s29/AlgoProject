@@ -1,252 +1,256 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import Spinner from "../components/Spinner";
+import React from "react";
 import { Link } from "react-router-dom";
-import { AiOutlineEdit } from "react-icons/ai";
-import { BsInfoCircle } from "react-icons/bs";
-import { MdOutlineAddBox, MdOutlineDelete } from "react-icons/md";
-import QuestionsTable from "../components/home/QuestionsTable";
-import QuestionsCard from "../components/home/QuestionsCard";
-import { BACKEND_URL } from "../../config";
-import { QUESTION_TOPICS } from "../utils/questionTopics";
 
-const Home = () => {
-    const [questions, setQuestions] = useState([]);
-    const [loading, setLoading] = useState(false);
-    const [showType, setShowType] = useState("table");
-
-    const [page, setPage] = useState(1);
-    const [limit] = useState(10); // ? Setting the number of questions to be displayed per page
-    const [totalPages, setTotalPages] = useState(1);
-    const [searchQuery, setSearchQuery] = useState("");
-    const [difficulty, setDifficulty] = useState("all");
-    const [status, setStatus] = useState("all"); // curruntly useless
-    const [topic, setTopic] = useState("all");
-
-    useEffect(() => {
-        setLoading(true);
-
-        axios
-            .get(`${BACKEND_URL}/api/questions`, {
-                params: {
-                    page,
-                    limit,
-                    search: searchQuery,
-                    difficulty: difficulty !== "all" ? difficulty : undefined,
-                    topic: topic !== "all" ? topic : undefined,
-                },
-                withCredentials: true, // ✅ This is the key addition for session and cookies
-            })
-            .then((res) => {
-                setQuestions(res.data.data);
-                setTotalPages(res.data.totalPages);
-                setLoading(false);
-            })
-            .catch((err) => {
-                console.error(err);
-                setLoading(false);
-            });
-    }, [page, searchQuery, difficulty, topic]);
-
+const LandingPage = () => {
     return (
-        <div className="p-4">
-            {/* Header and Add button */}
-            <div className="flex justify-between items-center">
-                <h1 className="text-3xl my-8">Questions List</h1>
-                <Link to="/questions/create">
-                    <MdOutlineAddBox className="text-sky-800 text-4xl" />
-                </Link>
-            </div>
-
-            {/* Filter/Search Bar + View Toggle */}
-            <div className="mb-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 items-end">
-                {/* Search */}
-                <div>
-                    <label className="block text-sm font-medium mb-2 text-gray-700">
-                        Search Problems
-                    </label>
-                    <input
-                        className="w-full px-4 py-2 rounded-lg border transition-all duration-300 bg-white border-gray-300 text-gray-800 placeholder-gray-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
-                        placeholder="Problem name or Topic or Author"
-                        type="text"
-                        value={searchQuery}
-                        onChange={(e) => {
-                            setSearchQuery(e.target.value);
-                            setPage(1);
-                        }}
-                    />
-                </div>
-
-                {/* Difficulty */}
-                <div>
-                    <label className="block text-sm font-medium mb-2 text-gray-700">
-                        Difficulty
-                    </label>
-                    <select
-                        value={difficulty}
-                        onChange={(e) => {
-                            setDifficulty(e.target.value);
-                            setPage(1); // reset to page 1 when filters change
-                        }}
-                        className="w-full pl-1 pr-4 py-2 rounded-lg border transition-all duration-300 bg-white border-gray-300 text-gray-800 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
-                    >
-                        <option value="all">All Difficulties</option>
-                        <option value="noob">Noob</option>
-                        <option value="easy">Easy</option>
-                        <option value="medium">Medium</option>
-                        <option value="hard">Hard</option>
-                        <option value="god">God</option>
-                    </select>
-                </div>
-
-                {/* Status (currently useless) */}
-                <div>
-                    <label className="block text-sm font-medium mb-2 text-gray-700">
-                        Status
-                    </label>
-                    <select className="w-full pl-1 pr-4 py-2 rounded-lg border transition-all duration-300 bg-white border-gray-300 text-gray-800 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20">
-                        <option value="all">All Problems</option>
-                        <option value="solved">Solved</option>
-                        <option value="attempted">Attempted</option>
-                        <option value="unsolved">Unsolved</option>
-                    </select>
-                </div>
-
-                {/* Topic */}
-                <div>
-                    <label className="block text-sm font-medium mb-2 text-gray-700">
-                        Topic
-                    </label>
-                    <select
-                        value={topic}
-                        onChange={(e) => {
-                            setTopic(e.target.value);
-                            setPage(1); // reset to page 1 when filters change
-                        }}
-                        className="w-full pl-1 pr-4 py-2 rounded-lg border transition-all duration-300 bg-white border-gray-300 text-gray-800 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
-                    >
-                        <option value="all">All Topics</option>
-                        {QUESTION_TOPICS.map((topic) => (
-                            <option key={topic} value={topic}>
-                                {topic.charAt(0).toUpperCase() + topic.slice(1)}
-                            </option>
-                        ))}
-                    </select>
-                </div>
-
-                {/* clear filter button and toggle view */}
-                <div className="flex justify-between items-end gap-2 w-full">
-                    {/* clear filter button */}
-                    <div>
-                        <button
-                            onClick={() => {
-                                setSearchQuery("");
-                                setDifficulty("all");
-                                setStatus("all");
-                                setTopic("all");
-                                setPage(1);
-                            }}
-                            className="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition-colors duration-200"
-                        >
-                            Clear Filters
-                        </button>
-                    </div>
-
-                    {/* View Switch */}
-                    <div className="flex gap-2 justify-end">
-                        <button
-                            className={`p-2 transition-colors duration-200 ${
-                                showType === "card"
-                                    ? "bg-blue-400 text-gray-800"
-                                    : "text-gray-500 hover:text-gray-800"
-                            }`}
-                            onClick={() => setShowType("card")}
-                        >
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="24"
-                                height="24"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                className="lucide lucide-grid-3x3 w-4 h-4"
-                            >
-                                <rect
-                                    width="18"
-                                    height="18"
-                                    x="3"
-                                    y="3"
-                                    rx="2"
-                                />
-                                <path d="M3 9h18" />
-                                <path d="M3 15h18" />
-                                <path d="M9 3v18" />
-                                <path d="M15 3v18" />
-                            </svg>
-                        </button>
-                        <button
-                            className={`p-2 transition-colors duration-200 ${
-                                showType === "table"
-                                    ? "bg-blue-400 text-gray-800"
-                                    : "text-gray-500 hover:text-gray-800"
-                            }`}
-                            onClick={() => setShowType("table")}
-                        >
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="24"
-                                height="24"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                className="lucide lucide-list w-4 h-4"
-                            >
-                                <path d="M3 12h.01" />
-                                <path d="M3 18h.01" />
-                                <path d="M3 6h.01" />
-                                <path d="M8 12h13" />
-                                <path d="M8 18h13" />
-                                <path d="M8 6h13" />
-                            </svg>
+        <div className="min-h-full bg-gray-50">
+            {/* Hero Section */}
+            <section className="bg-gradient-to-r from-gray-200 to-gray-400 text-gray-800 pt-16 pb-16">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="text-center">
+                        <h1 className="text-5xl font-bold mb-6">
+                            Welcome to Bro-Code
+                        </h1>
+                        <p className="text-xl mb-8 max-w-3xl mx-auto">
+                            Your ultimate destination for coding practice,
+                            learning, and community collaboration. Solve
+                            problems, share knowledge, and grow together.
+                        </p>
+                        <button className="bg-blue-600 text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-blue-700 transition-colors">
+                            Get Started
                         </button>
                     </div>
                 </div>
-            </div>
-
-            {loading ? (
-                <Spinner />
-            ) : showType === "table" ? (
-                <QuestionsTable questions={questions} />
-            ) : (
-                <QuestionsCard questions={questions} />
-            )}
-
-            {/* Pagination */}
-            {!loading && totalPages > 1 && (
-                <div className="flex justify-center items-center gap-2 mt-6 flex-wrap">
-                    {Array.from({ length: totalPages }, (_, i) => (
-                        <button
-                            key={i + 1}
-                            onClick={() => setPage(i + 1)}
-                            className={`px-3 py-1 rounded ${
-                                page === i + 1
-                                    ? "bg-sky-500 text-white"
-                                    : "bg-gray-200 text-gray-700"
-                            }`}
+            </section>
+            {/* Problems Section */}
+            <section className="py-16 bg-white">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="text-center mb-12">
+                        <h2 className="text-3xl font-bold text-gray-900 mb-4">
+                            Practice Problems
+                        </h2>
+                        <p className="text-lg text-gray-600 mb-8">
+                            Challenge yourself with our curated collection of
+                            coding problems
+                        </p>
+                        <div className="grid md:grid-cols-3 gap-6 mb-8">
+                            <div className="bg-green-50 p-6 rounded-lg border border-green-200">
+                                <h3 className="text-xl font-semibold text-green-800 mb-2">
+                                    Easy
+                                </h3>
+                                <p className="text-green-600">
+                                    Perfect for beginners
+                                </p>
+                            </div>
+                            <div className="bg-yellow-50 p-6 rounded-lg border border-yellow-200">
+                                <h3 className="text-xl font-semibold text-yellow-800 mb-2">
+                                    Medium
+                                </h3>
+                                <p className="text-yellow-600">
+                                    Intermediate challenges
+                                </p>
+                            </div>
+                            <div className="bg-red-50 p-6 rounded-lg border border-red-200">
+                                <h3 className="text-xl font-semibold text-red-800 mb-2">
+                                    Hard
+                                </h3>
+                                <p className="text-red-600">
+                                    Expert level problems
+                                </p>
+                            </div>
+                        </div>
+                        <Link
+                            to="/problems"
+                            className="bg-blue-600 text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-blue-700 transition-colors inline-block"
                         >
-                            {i + 1}
-                        </button>
-                    ))}
+                            Browse Problems
+                        </Link>
+                    </div>
                 </div>
-            )}
+            </section>
+            {/* Compiler Section */}
+            <section className="py-16 bg-gray-100">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="text-center mb-12">
+                        <h2 className="text-3xl font-bold text-gray-900 mb-4">
+                            Online Compiler
+                        </h2>
+                        <p className="text-lg text-gray-600 mb-8">
+                            Write, compile, and run your code instantly in our
+                            powerful online editor
+                        </p>
+                        <div className="bg-gray-900 text-green-400 p-6 rounded-lg max-w-2xl mx-auto mb-8 text-left font-mono">
+                            <div className="flex items-center mb-2">
+                                <div className="w-3 h-3 bg-red-500 rounded-full mr-2"></div>
+                                <div className="w-3 h-3 bg-yellow-500 rounded-full mr-2"></div>
+                                <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                            </div>
+                            <pre className="text-sm">
+                                {`#include <iostream>
+using namespace std;
+int main() {
+    cout << "Hello Bro-Code!" << endl;
+    return 0;
+}`}
+                            </pre>
+                        </div>
+                        <Link
+                            to="/"
+                            className="bg-green-600 text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-green-700 transition-colors inline-block"
+                        >
+                            Try Compiler
+                        </Link>
+                    </div>
+                </div>
+            </section>
+            {/* Blogs Section */}
+            <section className="py-16 bg-white">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="text-center mb-12">
+                        <h2 className="text-3xl font-bold text-gray-900 mb-4">
+                            Latest Blogs
+                        </h2>
+                        <p className="text-lg text-gray-600 mb-8">
+                            Stay updated with the latest programming insights
+                            and tutorials
+                        </p>
+                        <div className="grid md:grid-cols-3 gap-6 mb-8">
+                            <div className="bg-white p-6 rounded-lg shadow-md border">
+                                <h3 className="text-xl font-semibold mb-2">
+                                    Getting Started with DSA
+                                </h3>
+                                <p className="text-gray-600 mb-4">
+                                    Learn the fundamentals of Data Structures
+                                    and Algorithms...
+                                </p>
+                                <span className="text-sm text-gray-500">
+                                    2 days ago
+                                </span>
+                            </div>
+                            <div className="bg-white p-6 rounded-lg shadow-md border">
+                                <h3 className="text-xl font-semibold mb-2">
+                                    Advanced C++ Concepts
+                                </h3>
+                                <p className="text-gray-600 mb-4">
+                                    Dive deep into advanced C++ programming
+                                    techniques...
+                                </p>
+                                <span className="text-sm text-gray-500">
+                                    5 days ago
+                                </span>
+                            </div>
+                            <div className="bg-white p-6 rounded-lg shadow-md border">
+                                <h3 className="text-xl font-semibold mb-2">
+                                    Interview Preparation
+                                </h3>
+                                <p className="text-gray-600 mb-4">
+                                    Essential tips for cracking technical
+                                    interviews...
+                                </p>
+                                <span className="text-sm text-gray-500">
+                                    1 week ago
+                                </span>
+                            </div>
+                        </div>
+                        <Link
+                            to="/blogs"
+                            className="bg-purple-600 text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-purple-700 transition-colors inline-block"
+                        >
+                            Read All Blogs
+                        </Link>
+                    </div>
+                </div>
+            </section>
+            {/* Doubts Section */}
+            <section className="py-16 bg-gray-100">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="text-center mb-12">
+                        <h2 className="text-3xl font-bold text-gray-900 mb-4">
+                            Community Doubts
+                        </h2>
+                        <p className="text-lg text-gray-600 mb-8">
+                            Get help from the community and help others with
+                            their coding doubts
+                        </p>
+                        <div className="grid md:grid-cols-2 gap-6 mb-8">
+                            <div className="bg-white p-6 rounded-lg shadow-md border">
+                                <h3 className="text-lg font-semibold mb-2">
+                                    How to optimize this sorting algorithm?
+                                </h3>
+                                <p className="text-gray-600 mb-2">
+                                    I'm trying to improve the time complexity of
+                                    my bubble sort...
+                                </p>
+                                <div className="flex justify-between text-sm text-gray-500">
+                                    <span>3 answers</span>
+                                    <span>2 hours ago</span>
+                                </div>
+                            </div>
+                            <div className="bg-white p-6 rounded-lg shadow-md border">
+                                <h3 className="text-lg font-semibold mb-2">
+                                    Understanding pointers in C++
+                                </h3>
+                                <p className="text-gray-600 mb-2">
+                                    Can someone explain the difference between *
+                                    and & operators...
+                                </p>
+                                <div className="flex justify-between text-sm text-gray-500">
+                                    <span>5 answers</span>
+                                    <span>4 hours ago</span>
+                                </div>
+                            </div>
+                        </div>
+                        <Link
+                            to="/doubts"
+                            className="bg-orange-600 text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-orange-700 transition-colors inline-block"
+                        >
+                            Browse Doubts
+                        </Link>
+                    </div>
+                </div>
+            </section>
+            {/* Leaderboard Mention Section */}
+            <section className="py-16 bg-white">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="text-center">
+                        <h2 className="text-3xl font-bold text-gray-900 mb-4">
+                            Compete & Excel
+                        </h2>
+                        <p className="text-lg text-gray-600 mb-8">
+                            Track your progress, compete with peers, and climb
+                            the leaderboard
+                        </p>
+                        <div className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white p-8 rounded-lg max-w-2xl mx-auto mb-8">
+                            <h3 className="text-2xl font-bold mb-4">
+                                🏆 Leaderboard
+                            </h3>
+                            <p className="text-lg">
+                                See where you stand among the coding champions
+                            </p>
+                        </div>
+                        <Link
+                            to="/leaderboard"
+                            className="bg-yellow-600 text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-yellow-700 transition-colors inline-block"
+                        >
+                            View Leaderboard
+                        </Link>
+                    </div>
+                </div>
+            </section>
+            {/* Footer */}
+            <footer className="bg-gray-900 text-white py-12">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                    <h3 className="text-2xl font-bold mb-4">Bro-Code</h3>
+                    <p className="text-gray-400 mb-4">
+                        Empowering developers, one line of code at a time.
+                    </p>
+                    <p className="text-gray-500">
+                        © 2025 Bro-Code. All rights reserved.
+                    </p>
+                </div>
+            </footer>
         </div>
     );
 };
 
-export default Home;
+export default LandingPage;

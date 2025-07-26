@@ -67,7 +67,7 @@ const DoubtList = ({ currentUser }) => {
                     to="/doubts/create"
                     className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors"
                 >
-                    Ask a Question
+                    Ask a Doubt
                 </Link>
             </div>
 
@@ -132,7 +132,7 @@ const DoubtList = ({ currentUser }) => {
                         to="/doubts/create"
                         className="text-blue-600 hover:text-blue-800 mt-2 inline-block"
                     >
-                        Ask your first question
+                        Ask your doubt
                     </Link>
                 </div>
             ) : (

@@ -5,6 +5,7 @@ import { formatDistanceToNow } from "date-fns";
 import { BACKEND_URL } from "../../../config.js";
 import DoubtResponse from "../../components/doubts/DoubtResponse";
 import Spinner from "../../components/Spinner";
+import { GEMINI_API_KEY } from "../../../config.js";
 
 const DoubtDetail = ({ currentUser }) => {
     const { id } = useParams();
@@ -15,12 +16,61 @@ const DoubtDetail = ({ currentUser }) => {
     const [responseContent, setResponseContent] = useState("");
     const [submittingResponse, setSubmittingResponse] = useState(false);
     const [resolvingDoubt, setResolvingDoubt] = useState(false);
-
-    // Add this in your DoubtDetail component after the state declarations
+    const [generatingAIResponse, setGeneratingAIResponse] = useState(false);
 
     useEffect(() => {
         fetchDoubt();
     }, [id]);
+
+    const generateAIResponse = async () => {
+        if (!doubt.content) return;
+
+        setGeneratingAIResponse(true);
+        try {
+            const response = await fetch(
+                "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-goog-api-key": `${GEMINI_API_KEY}`, // Replace with your actual API key
+                    },
+                    body: JSON.stringify({
+                        contents: [
+                            {
+                                parts: [
+                                    {
+                                        text: `Provide a helpful response to this student's doubt in around 60 words. Be clear, concise, and educational:\n\nDoubt: ${doubt.content}`,
+                                    },
+                                ],
+                            },
+                        ],
+                    }),
+                }
+            );
+
+            const data = await response.json();
+            if (data.candidates && data.candidates[0]) {
+                // Convert markdown to plain text by removing markdown syntax
+                const aiResponse = data.candidates[0].content.parts[0].text
+                    .replace(/\*\*(.*?)\*\*/g, "$1") // Remove bold
+                    .replace(/\*(.*?)\*/g, "$1") // Remove italic
+                    .replace(/`(.*?)`/g, "$1") // Remove code backticks
+                    .replace(/#{1,6}\s/g, "") // Remove headers
+                    .replace(/^\s*[-*+]\s/gm, "• ") // Convert bullet points
+                    .trim();
+
+                setResponseContent(aiResponse);
+            }
+        } catch (error) {
+            console.error("Error generating AI response:", error);
+            setResponseContent(
+                "Error generating AI response. Please try again."
+            );
+        } finally {
+            setGeneratingAIResponse(false);
+        }
+    };
 
     const fetchDoubt = async () => {
         try {
@@ -137,7 +187,11 @@ const DoubtDetail = ({ currentUser }) => {
     // const isOwnDoubt = currentUser && doubt.student._id === currentUser._id;
     const isOwnDoubt = currentUser && doubt.student._id === currentUser.id;
     const canRespond =
-        currentUser && (currentUser.isTeacher || doubt.isPublic || isOwnDoubt);
+        currentUser &&
+        (currentUser.isTeacher ||
+            doubt.isPublic ||
+            doubt.student._id === currentUser.id ||
+            doubt.student._id === currentUser._id);
     const canResolve = currentUser && isOwnDoubt;
     const displayName = doubt.isAnonymous
         ? "Anonymous"
@@ -255,12 +309,24 @@ const DoubtDetail = ({ currentUser }) => {
                     {canRespond && (
                         <form onSubmit={handleAddResponse} className="mt-6">
                             <div className="mb-4">
-                                <label
-                                    htmlFor="response"
-                                    className="block text-sm font-medium text-gray-700 mb-2"
-                                >
-                                    Add your response
-                                </label>
+                                <div className="flex justify-between items-center mb-2">
+                                    <label
+                                        htmlFor="response"
+                                        className="block text-sm font-medium text-gray-700"
+                                    >
+                                        Add your response
+                                    </label>
+                                    <button
+                                        type="button"
+                                        onClick={generateAIResponse}
+                                        disabled={generatingAIResponse}
+                                        className="bg-purple-500 text-white px-3 py-1 rounded text-sm hover:bg-purple-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                                    >
+                                        {generatingAIResponse
+                                            ? "Generating..."
+                                            : "AI Response"}
+                                    </button>
+                                </div>
                                 <textarea
                                     id="response"
                                     value={responseContent}
