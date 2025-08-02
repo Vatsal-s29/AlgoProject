@@ -37,6 +37,9 @@ import EditDoubt from "./pages/doubts/EditDoubt";
 // Ask-Bro (only frontend)
 import AskBro from "./pages/AskBro";
 
+// simple compiler
+import Compiler from "./pages/Compiler";
+
 const App = () => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [user, setUser] = useState(null);
@@ -163,6 +166,9 @@ const App = () => {
 
                 {/* Ask Bro */}
                 <Route path="/askbro" element={<AskBro />} />
+
+                {/* Simple compiler */}
+                <Route path="/compiler" element={<Compiler />} />
             </Route>
         </Routes>
     );

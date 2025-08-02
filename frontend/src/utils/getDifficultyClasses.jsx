@@ -7,7 +7,7 @@
  */
 const getDifficultyClasses = (difficulty) => {
     switch (difficulty) {
-        case "noob":
+        case "basic":
             return "bg-blue-100 text-blue-500";
         case "easy":
             return "bg-green-100 text-green-600";

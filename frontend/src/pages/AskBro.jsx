@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
-import { GEMINI_API_KEY } from "../../config";
+import { GEMINI_API_KEY2 } from "../../config";
 
 const AskBro = () => {
     const [messages, setMessages] = useState([
@@ -45,7 +45,7 @@ const AskBro = () => {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
-                        "X-goog-api-key": `${GEMINI_API_KEY}`, // Replace with your actual API key
+                        "X-goog-api-key": `${GEMINI_API_KEY2}`, // Replace with your actual API key
                     },
                     body: JSON.stringify({
                         contents: [

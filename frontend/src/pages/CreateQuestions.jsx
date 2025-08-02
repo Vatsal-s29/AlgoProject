@@ -73,7 +73,7 @@ const validateFormData = async (formData, enqueueSnackbar) => {
     }
 
     // Check difficulty value is valid
-    const validDifficulties = ["noob", "easy", "medium", "hard", "god"];
+    const validDifficulties = ["basic", "easy", "medium", "hard", "god"];
     if (!validDifficulties.includes(difficulty)) {
         enqueueSnackbar("Invalid difficulty level selected.", {
             variant: "error",
@@ -421,7 +421,7 @@ const CreateQuestions = () => {
                                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 required
                             >
-                                {["noob", "easy", "medium", "hard", "god"].map(
+                                {["basic", "easy", "medium", "hard", "god"].map(
                                     (level) => (
                                         <option key={level} value={level}>
                                             {level.charAt(0).toUpperCase() +

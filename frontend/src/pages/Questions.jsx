@@ -28,7 +28,7 @@ const Questions = () => {
     useEffect(() => {
         checkAuthStatus();
         fetchQuestions();
-    }, [page, searchQuery, difficulty, topic, location.pathname]);
+    }, [page, searchQuery, difficulty, topic, status, location.pathname]);
 
     const checkAuthStatus = async () => {
         try {
@@ -58,6 +58,7 @@ const Questions = () => {
                     search: searchQuery,
                     difficulty: difficulty !== "all" ? difficulty : undefined,
                     topic: topic !== "all" ? topic : undefined,
+                    status: status !== "all" ? status : undefined,
                 },
                 withCredentials: true, // ✅ This is the key addition for session and cookies
             })
@@ -76,7 +77,9 @@ const Questions = () => {
         <div className=" w-[82%] mx-auto p-4">
             {/* Header and Add button */}
             <div className="flex justify-between items-center mb-5">
-                <h1 className="text-3xl font-bold text-gray-900 mb-2 mt-8">Questions List</h1>
+                <h1 className="text-3xl font-bold text-gray-900 mb-2 mt-8">
+                    Questions List
+                </h1>
                 <Link
                     to="/questions/create"
                     className="mt-9 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
@@ -118,7 +121,7 @@ const Questions = () => {
                         className="w-full pl-1 pr-4 py-2 rounded-lg border transition-all duration-300 bg-white border-gray-300 text-gray-800 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
                     >
                         <option value="all">All Difficulties</option>
-                        <option value="noob">Noob</option>
+                        <option value="basic">Basic</option>
                         <option value="easy">Easy</option>
                         <option value="medium">Medium</option>
                         <option value="hard">Hard</option>
@@ -131,7 +134,14 @@ const Questions = () => {
                     <label className="block text-sm font-medium mb-2 text-gray-700">
                         Status
                     </label>
-                    <select className="w-full pl-1 pr-4 py-2 rounded-lg border transition-all duration-300 bg-white border-gray-300 text-gray-800 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20">
+                    <select
+                        value={status}
+                        onChange={(e) => {
+                            setStatus(e.target.value);
+                            setPage(1);
+                        }}
+                        className="w-full pl-1 pr-4 py-2 rounded-lg border transition-all duration-300 bg-white border-gray-300 text-gray-800 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+                    >
                         <option value="all">All Problems</option>
                         <option value="solved">Solved</option>
                         <option value="attempted">Attempted</option>
@@ -184,8 +194,8 @@ const Questions = () => {
                         <button
                             className={`p-2 transition-colors duration-200 ${
                                 showType === "card"
-                                    ? "bg-blue-400 text-gray-800"
-                                    : "text-gray-500 hover:text-gray-800"
+                                    ? "bg-blue-400 text-gray-800 rounded-lg"
+                                    : "text-gray-500 hover:text-gray-800 rounded-lg"
                             }`}
                             onClick={() => setShowType("card")}
                         >
@@ -217,8 +227,8 @@ const Questions = () => {
                         <button
                             className={`p-2 transition-colors duration-200 ${
                                 showType === "table"
-                                    ? "bg-blue-400 text-gray-800"
-                                    : "text-gray-500 hover:text-gray-800"
+                                    ? "bg-blue-400 text-gray-800 rounded-lg"
+                                    : "text-gray-500 hover:text-gray-800 rounded-lg"
                             }`}
                             onClick={() => setShowType("table")}
                         >

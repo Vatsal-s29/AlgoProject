@@ -40,7 +40,7 @@ const questionSchema = new mongoose.Schema(
         difficulty: {
             type: String,
             required: true,
-            enum: ["noob", "easy", "medium", "hard", "god"], // Only these values allowed
+            enum: ["basic", "easy", "medium", "hard", "god"], // Only these values allowed
             lowercase: true, // Ensures case-insensitive input
             trim: true, // Removes extra whitespace
         },

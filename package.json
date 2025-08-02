@@ -1,7 +1,9 @@
 {
   "dependencies": {
     "date-fns": "^4.1.0",
+    "prismjs": "^1.30.0",
     "react-markdown": "^10.1.0",
+    "react-simple-code-editor": "^0.14.1",
     "react-spinners": "^0.17.0",
     "remark-breaks": "^4.0.0"
   }

@@ -297,7 +297,7 @@ const EditQuestion = () => {
                             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                             required
                         >
-                            {["noob", "easy", "medium", "hard", "god"].map(
+                            {["basic", "easy", "medium", "hard", "god"].map(
                                 (d) => (
                                     <option key={d} value={d}>
                                         {d.charAt(0).toUpperCase() + d.slice(1)}

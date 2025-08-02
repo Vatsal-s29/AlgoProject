@@ -74,7 +74,7 @@ const Navbar = () => {
                         Problems
                     </Link>
                     <Link
-                        to="/"
+                        to="/compiler"
                         className="hover:text-blue-600 transition-colors"
                     >
                         Compiler
@@ -178,7 +178,7 @@ export default Navbar;
 // import { Sun, Moon, User } from "lucide-react";
 // import blackLogo from "../assets/black-bro-code.svg";
 // import { BACKEND_URL } from "../../config.js";
-import AskBro from '../pages/AskBro';
+import AskBro from "../pages/AskBro";
 
 // const Navbar = () => {
 //     const [dropdownOpen, setDropdownOpen] = useState(false);

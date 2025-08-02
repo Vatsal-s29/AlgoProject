@@ -107,6 +107,7 @@ const LandingPage = () => {
                     </div>
                 </div>
             </section>
+
             {/* Problems Section */}
             <section className="py-16 bg-gray-50">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -215,117 +216,6 @@ const LandingPage = () => {
                                 style={{ fontFamily: "Poppins, sans-serif" }}
                             >
                                 Browse Problems
-                            </Link>
-                        </div>
-                    </div>
-                </div>
-            </section>
-            {/* Ask-Bro Section */}
-            <section className="py-16 bg-gray-50">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="bg-white rounded-lg shadow-lg p-8">
-                        <div className="text-center mb-12">
-                            <h1
-                                className="text-[40px] font-bold text-gray-900 mb-2"
-                                style={{ fontFamily: "Poppins, sans-serif" }}
-                            >
-                                Ask-Bro!
-                            </h1>
-                            <p className="text-lg text-gray-600 mb-8 w-[1000px] mx-auto text-center">
-                                Stuck on a problem? Your coding bro is here to
-                                help! Ask any programming question and get
-                                instant, personalized assistance from our AI
-                                companion.
-                            </p>
-
-                            {/* Chat Interface Preview */}
-                            <div className="bg-gray-50 border rounded-lg max-w-3xl mx-auto mb-8 overflow-hidden">
-                                {/* Chat Header */}
-                                <div className="bg-gray-800 text-white p-4 flex items-center">
-                                    <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center mr-3">
-                                        <span className="text-sm font-bold">
-                                            B
-                                        </span>
-                                    </div>
-                                    <span
-                                        className="font-semibold"
-                                        style={{
-                                            fontFamily: "Poppins, sans-serif",
-                                        }}
-                                    >
-                                        Bro Assistant
-                                    </span>
-                                    <div className="ml-auto flex space-x-1">
-                                        <div className="w-3 h-3 bg-red-500 rounded-full"></div>
-                                        <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
-                                        <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                                    </div>
-                                </div>
-
-                                {/* Chat Messages */}
-                                <div className="p-6 space-y-4 text-left">
-                                    <div className="flex justify-end">
-                                        <div className="bg-blue-500 text-white p-3 rounded-lg max-w-xs">
-                                            <p className="text-sm">
-                                                How do I reverse a linked list?
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <div className="flex justify-start">
-                                        <div className="bg-gray-200 text-gray-800 p-3 rounded-lg max-w-md">
-                                            <p className="text-sm">
-                                                Great question, bro! To reverse
-                                                a linked list, you'll need to
-                                                use three pointers: prev,
-                                                current, and next. Here's the
-                                                approach...
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <div className="flex justify-end">
-                                        <div className="bg-blue-500 text-white p-3 rounded-lg max-w-xs">
-                                            <p className="text-sm">
-                                                Can you show me the code?
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <div className="flex justify-start">
-                                        <div className="bg-gray-200 text-gray-800 p-3 rounded-lg max-w-md">
-                                            <p className="text-sm">
-                                                Absolutely! Let me write that
-                                                out for you... 💻
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Chat Input */}
-                                <div className="bg-white border-t p-4">
-                                    <div className="flex items-center space-x-2">
-                                        <input
-                                            type="text"
-                                            placeholder="Ask your coding question..."
-                                            className="flex-1 p-2 border rounded-lg bg-gray-50"
-                                            disabled
-                                        />
-                                        <button
-                                            className="bg-blue-500 text-white p-2 rounded-lg"
-                                            disabled
-                                        >
-                                            <span className="text-sm">
-                                                Send
-                                            </span>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <Link
-                                to="/AskBro"
-                                className="bg-blue-600 text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-blue-700 transition-colors inline-block mt-4"
-                                style={{ fontFamily: "Poppins, sans-serif" }}
-                            >
-                                Start Chatting with Bro
                             </Link>
                         </div>
                     </div>
@@ -454,177 +344,7 @@ int main() {
                 </div>
             </section>
 
-            
-
             {/* Doubts Section */}
-            <section className="py-16 bg-gray-50">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="bg-white rounded-lg shadow-lg p-8">
-                        <div className="text-center mb-12">
-                            <h1
-                                className="text-[40px] font-bold text-gray-900 mb-2"
-                                style={{ fontFamily: "Poppins, sans-serif" }}
-                            >
-                                Doubt Resoultion
-                            </h1>
-                            <p className="text-lg text-gray-600 mb-8 w-[1000px] mx-auto text-center">
-                                Get help from the community and help others with
-                                their coding doubts
-                            </p>
-
-                            {/* Forum-style Interface Preview */}
-                            <div className="bg-gray-50 border rounded-lg max-w-4xl mx-auto mb-8 overflow-hidden">
-                                {/* Forum Header */}
-                                <div className="bg-gradient-to-r from-purple-600 to-blue-600 text-white p-4">
-                                    <div className="flex items-center justify-between">
-                                        <h3
-                                            className="text-lg font-semibold"
-                                            style={{
-                                                fontFamily:
-                                                    "Poppins, sans-serif",
-                                            }}
-                                        >
-                                            💬 Doubts
-                                        </h3>
-                                        <div className="flex items-center space-x-4 text-sm">
-                                            <span>🔥 248 Active</span>
-                                            <span>❓ 1.2k Questions</span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Forum Posts */}
-                                <div className="divide-y divide-gray-200">
-                                    <div className="p-4 hover:bg-gray-50 transition-colors">
-                                        <div className="flex items-start space-x-3">
-                                            <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white font-semibold">
-                                                A
-                                            </div>
-                                            <div className="flex-1 text-left">
-                                                <h4
-                                                    className="font-semibold text-gray-900 mb-1"
-                                                    style={{
-                                                        fontFamily:
-                                                            "Poppins, sans-serif",
-                                                    }}
-                                                >
-                                                    How to optimize this sorting
-                                                    algorithm? 🚀
-                                                </h4>
-                                                <p className="text-gray-600 text-sm mb-2">
-                                                    I'm trying to improve the
-                                                    time complexity of my bubble
-                                                    sort implementation...
-                                                </p>
-                                                <div className="flex items-center space-x-4 text-xs text-gray-500">
-                                                    <span className="bg-green-100 text-green-800 px-2 py-1 rounded">
-                                                        Algorithm
-                                                    </span>
-                                                    <span>👥 3 answers</span>
-                                                    <span>⏰ 2 hours ago</span>
-                                                    <span>👍 12 likes</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div className="p-4 hover:bg-gray-50 transition-colors">
-                                        <div className="flex items-start space-x-3">
-                                            <div className="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center text-white font-semibold">
-                                                M
-                                            </div>
-                                            <div className="flex-1 text-left">
-                                                <h4
-                                                    className="font-semibold text-gray-900 mb-1"
-                                                    style={{
-                                                        fontFamily:
-                                                            "Poppins, sans-serif",
-                                                    }}
-                                                >
-                                                    Understanding pointers in
-                                                    C++ 🎯
-                                                </h4>
-                                                <p className="text-gray-600 text-sm mb-2">
-                                                    Can someone explain the
-                                                    difference between * and &
-                                                    operators with examples...
-                                                </p>
-                                                <div className="flex items-center space-x-4 text-xs text-gray-500">
-                                                    <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded">
-                                                        C++
-                                                    </span>
-                                                    <span>👥 5 answers</span>
-                                                    <span>⏰ 4 hours ago</span>
-                                                    <span>👍 8 likes</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div className="p-4 hover:bg-gray-50 transition-colors">
-                                        <div className="flex items-start space-x-3">
-                                            <div className="w-10 h-10 bg-orange-500 rounded-full flex items-center justify-center text-white font-semibold">
-                                                S
-                                            </div>
-                                            <div className="flex-1 text-left">
-                                                <h4
-                                                    className="font-semibold text-gray-900 mb-1"
-                                                    style={{
-                                                        fontFamily:
-                                                            "Poppins, sans-serif",
-                                                    }}
-                                                >
-                                                    Dynamic Programming approach
-                                                    needed 🧠
-                                                </h4>
-                                                <p className="text-gray-600 text-sm mb-2">
-                                                    Looking for an efficient DP
-                                                    solution for the coin change
-                                                    problem...
-                                                </p>
-                                                <div className="flex items-center space-x-4 text-xs text-gray-500">
-                                                    <span className="bg-purple-100 text-purple-800 px-2 py-1 rounded">
-                                                        DP
-                                                    </span>
-                                                    <span>👥 2 answers</span>
-                                                    <span>⏰ 6 hours ago</span>
-                                                    <span>👍 15 likes</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Quick Actions */}
-                                <div className="bg-white border-t p-4">
-                                    <div className="flex items-center justify-between">
-                                        <button
-                                            className="bg-blue-500 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-blue-600 transition-colors"
-                                            disabled
-                                        >
-                                            ❓ Ask Question
-                                        </button>
-                                        <div className="flex items-center space-x-3 text-sm text-gray-500">
-                                            <span>🔍 Search doubts</span>
-                                            <span>📊 Browse by tags</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <Link
-                                to="/problems"
-                                className="bg-purple-600 text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-purple-700 transition-colors inline-block mt-4"
-                                style={{ fontFamily: "Poppins, sans-serif" }}
-                            >
-                                Browse Doubts
-                            </Link>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            {/* Doubts Section
             <section className="py-16 bg-gray-50">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="bg-white rounded-lg shadow-lg p-8">
@@ -687,7 +407,7 @@ int main() {
                         </div>
                     </div>
                 </div>
-            </section> */}
+            </section>
 
             {/* Leaderboard Mention Section */}
             <section className="py-16 bg-gray-50">
@@ -737,6 +457,7 @@ int main() {
                     </div>
                 </div>
             </section>
+
             {/* Footer */}
             <footer className="bg-gray-900 text-white py-12">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">

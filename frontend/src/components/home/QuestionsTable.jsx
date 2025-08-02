@@ -53,7 +53,7 @@ const QuestionsTable = ({ questions, user }) => {
                                             className="text-blue-600 hover:text-blue-800 hover:underline cursor-pointer font-medium"
                                             title="Quick View"
                                         >
-                                            {index + 1}
+                                            {index + 1}.
                                         </button>
                                     </td>
 
