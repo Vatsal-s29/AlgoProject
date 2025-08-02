@@ -4,9 +4,17 @@
 
 ---
 
+## 📽️ Project Demo
+
+Click the image below to watch the full demo:
+
+[![Watch the video](https://img.youtube.com/vi/h4ChvOKZZPg/0.jpg)](https://youtu.be/h4ChvOKZZPg)
+
+---
+
 ## 🌟 What is it?
 
-The **Coding Learning Platform** is a revolutionary tool built to empower teachers and inspire students in their coding journey. It's not just a learning platform – it's an **intelligent, interactive, and adaptive environment** designed for the future of coding education.
+The **Coding Learning Platform** is a tool built to empower teachers and inspire students in their coding journey. It's not just a learning platform – it's an **intelligent, interactive, and adaptive environment** designed for the future of coding education.
 Whether you're a teacher creating assignments or a student practicing your skills, this platform transforms the traditional learning model with **AI-driven features** and **real-time coding tools**.
 
 ---
