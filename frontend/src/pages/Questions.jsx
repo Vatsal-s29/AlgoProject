@@ -80,12 +80,14 @@ const Questions = () => {
                 <h1 className="text-3xl font-bold text-gray-900 mb-2 mt-8">
                     Questions List
                 </h1>
-                <Link
-                    to="/questions/create"
-                    className="mt-9 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-                >
-                    Add Problem
-                </Link>
+                {user?.isTeacher && (
+                    <Link
+                        to="/questions/create"
+                        className="mt-9 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                    >
+                        Add Problem
+                    </Link>
+                )}
             </div>
 
             {/* Filter/Search Bar + View Toggle */}

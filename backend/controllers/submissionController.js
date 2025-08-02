@@ -369,8 +369,32 @@ export const getLeaderboard = async (req, res) => {
         const limit = parseInt(req.query.limit) || 20;
         const skip = (page - 1) * limit;
 
-        // Get all users who have made submissions
+        // // Get all users who have made submissions
+        // const usersWithSubmissions = await Submission.aggregate([
+        //     {
+        //         $group: {
+        //             _id: "$userId",
+        //         },
+        //     },
+        // ]);
+        // Get all users who have made submissions (excluding teachers)
         const usersWithSubmissions = await Submission.aggregate([
+            {
+                $lookup: {
+                    from: "users",
+                    localField: "userId",
+                    foreignField: "_id",
+                    as: "user",
+                },
+            },
+            {
+                $unwind: "$user",
+            },
+            {
+                $match: {
+                    "user.isTeacher": { $ne: true }, // Exclude teachers
+                },
+            },
             {
                 $group: {
                     _id: "$userId",
