@@ -2,5 +2,5 @@
 
 export const BACKEND_URL = "http://localhost:5555";
 
-export const GEMINI_API_KEY = "AIzaSyCsNL1lEUYW0xkMvezEy8bz5PL3cq6WHEI";
-export const GEMINI_API_KEY2 = "AIzaSyDcespjgbPvljeZWpTVwJF5RkMTV3pn7S0";
+export const GEMINI_API_KEY = "key1";
+export const GEMINI_API_KEY2 = "key2";
