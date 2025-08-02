@@ -363,7 +363,7 @@ int main() {
                                 </pre>
                             </div>
                             <Link
-                                to="/problems"
+                                to="/compiler"
                                 className="bg-gray-800 text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-gray-600 transition-colors inline-block mt-10"
                                 style={{ fontFamily: "Poppins, sans-serif" }}
                             >
@@ -443,7 +443,7 @@ int main() {
                                 </div>
                             </div>
                             <Link
-                                to="/problems"
+                                to="/blogs"
                                 className="bg-gray-800 text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-gray-600 transition-colors inline-block mt-10"
                                 style={{ fontFamily: "Poppins, sans-serif" }}
                             >
@@ -453,8 +453,6 @@ int main() {
                     </div>
                 </div>
             </section>
-
-            
 
             {/* Doubts Section */}
             <section className="py-16 bg-gray-50">
@@ -613,7 +611,7 @@ int main() {
                             </div>
 
                             <Link
-                                to="/problems"
+                                to="/doubts"
                                 className="bg-purple-600 text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-purple-700 transition-colors inline-block mt-4"
                                 style={{ fontFamily: "Poppins, sans-serif" }}
                             >
